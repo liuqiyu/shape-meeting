@@ -1,0 +1,53 @@
+  .asp-smart-dialog-dynamic {
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 7vh !important;
+
+    .el-dialog__header {
+      border-bottom: 1px solid #DEE9FC;
+      padding: 15px 20px;
+
+      .el-dialog__headerbtn {
+        top: 15px;
+
+        .el-dialog__close {
+          color: #7EA1EE;
+        }
+      }
+    }
+
+    .el-dialog__body {
+      padding: 0px !important;
+      font-size: 12px;
+
+      .asp-dialog__body {
+        padding: 15px 20px;
+
+        .el-form {
+          .el-form-item__label {
+            font-size: 12px;
+          }
+
+          .el-form-item__content {
+            font-size: 12px;
+
+            .el-input {
+              font-size: 12px;
+
+              .el-input__inner {
+                font-size: 12px;
+              }
+            }
+          }
+        }
+      }
+
+      .asp-dialog__footer {
+        width: 100%;
+        border-top: 1px solid #DFE9FC;
+        text-align: right;
+        background: #F1F5FA;
+        padding: 10px 20px;
+      }
+    }
+  }

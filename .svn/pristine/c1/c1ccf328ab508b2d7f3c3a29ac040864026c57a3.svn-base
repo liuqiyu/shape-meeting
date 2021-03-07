@@ -1,0 +1,251 @@
+<template>
+  <div class="asp-research-editproblem"
+       :class="'is_' + position">
+    <el-collapse v-model="innerActiveNames" style="margin-bottom: 10px;">
+      <el-collapse-item :name="index">
+        <template slot="title">
+          <span class="title"
+                :style="{
+              'color': 'rgb(48,49,51,1)',
+              'font-size': '15px'
+            }">
+            <i class="el-icon-tickets"
+                style="margin-right: 5px"></i>{{ item.collapseTitle }} {{ index + 1 }}
+          </span>
+          <el-button
+            size="10px"
+            :type="'primary'"
+            :style="{float: 'center', margin:'0 4px'}"
+            class="solid-with-icon-btn"
+            @click.stop="deleteRow(index)">{{ item.delButtonLabel }}</el-button>
+        </template>
+          <el-form
+            ref="researchForm"
+            class="asp-smart-form__research"
+            :model="problemItem"
+            :size="'small'"
+            :label-width="'160px'"
+            :label-position="'right'">
+            <div
+              class="form-item-box form-item-box-basic"
+              style="word-break: break-all; width: 100%;"
+            >
+            <div class="label-style" style="width: 160px;"></div>
+            <el-form-item
+              :prop="item.problemDescColumnName"
+              :rules="item.problemDescRules"
+              :label="item.problemDescLabel + '：'">
+              <el-input
+                v-model="problemItem[item.problemDescColumnName]"
+                type="textarea"
+                :rows="1"
+                :minlength="item.problemDescMinLength"
+                :maxlength="item.problemDescMaxLength"
+                show-word-limit
+                style="margin-right: 10px;width: calc( 100% - 70px);"
+              ></el-input>
+              <el-button
+                v-if="item.problemExtSwitch"
+                type="text"
+                @click="addExt"
+              >{{ item.problemAddExtLabel }}</el-button>
+            </el-form-item>
+            </div>
+            <div
+              v-show="showProduct"
+              class="form-item-box form-item-box-basic"
+              style="word-break: break-all; width: 100%;"
+            >
+            <div class="label-style" style="width: 160px;"></div>
+            <el-form-item :label="item.problemExtLabel + '：'" :rules="item.problemExtRules">
+              <el-input
+                v-model="problemItem[item.problemExtColumnName]"
+                :minlength="item.problemExtMinLength"
+                :maxlength="item.problemExtMaxLength"
+                show-word-limit
+                style="margin-right: 10px;width: calc( 100% - 70px);"
+              ></el-input>
+              <el-button
+                type="text"
+                @click="deleteExt"
+              >{{ item.problemDelExtLabel }}</el-button>
+            </el-form-item>
+            </div>
+            <div
+              class="form-item-box form-item-box-basic"
+              style="word-break: break-all; width: 100%;"
+            >
+            <div class="label-style" style="width: 160px;"></div>
+            <el-form-item :label="item.replyTypeLabel + '：'" :prop="item.replyTypeColumnName" :rules="item.replyTypeRules">
+              <el-radio-group v-model="problemItem[item.replyTypeColumnName]" @change="(value) => changeReplyType(value, problemItem)">
+                <el-radio v-for="(replyWayItem, replyWayIndex) in computeOptionList"
+                          :label="replyWayItem.value"
+                          :value="replyWayItem.value"
+                          :key="replyWayIndex">{{ replyWayItem.label }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            </div>
+            <div
+              v-show="problemItem[item.replyTypeColumnName] === item.multiSelectCode"
+              class="form-item-box form-item-box-basic"
+              style="word-break: break-all; width: 100%;"
+            >
+            <div class="label-style" style="width: 160px;"></div>
+            <el-form-item :label="item.multiSelectLabel + '：'" :prop="item.multiSelectColumnName" :rules="item.multiSelectRules">
+              <el-select
+                v-model="problemItem[item.multiSelectColumnName]"
+                multiple
+                filterable
+                allow-create
+                default-first-option
+                style="width: 100%">
+                <el-option
+                  v-for="(option, oIndex) in problemItem[item.multiSelectColumnName]"
+                  :key="oIndex"
+                  :label="option"
+                  :value="option">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            </div>
+            <div
+              v-show="problemItem[item.replyTypeColumnName] === item.singleSelectCode"
+              class="form-item-box form-item-box-basic"
+              style="word-break: break-all; width: 100%;"
+            >
+            <div class="label-style" style="width: 160px;"></div>
+            <el-form-item :label="item.singleSelectLabel + '：'" :prop="item.singleSelectColumnName" :rules="item.singleSelectRules">
+              <el-select
+                v-model="problemItem[item.singleSelectColumnName]"
+                multiple
+                filterable
+                allow-create
+                default-first-option
+                style="width: 100%">
+                <el-option
+                  v-for="(option, oIndex) in problemItem[item.singleSelectColumnName]"
+                  :key="oIndex"
+                  :label="option"
+                  :value="option">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            </div>
+          </el-form>
+      </el-collapse-item>
+    </el-collapse>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'asp-research-editproblem',
+  computed: {},
+  props: {
+    model: {
+      type: Object,
+      default: () => { }
+    },
+    position: {
+      type: String,
+      default: () => 'left'
+    },
+    item: {
+      type: Object,
+      default: () => { }
+    },
+    dataList: {
+      type: Array,
+      default: () => []
+    },
+    problemItem: {
+      type: Object,
+      default: () => { }
+    },
+    index: {
+      type: Number,
+      default: () => 0
+    },
+    computeOptionList: {
+      type: Array,
+      default: () => []
+    }
+  },
+  data () {
+    return {
+      showProduct: false,
+      innerActiveNames: []
+    }
+  },
+  watch: {
+    'dataList' () {
+      this.getActiveNames()
+    }
+  },
+  mounted () {
+    this.getActiveNames()
+    if (this.problemItem[this.item.problemExtColumnName] && this.problemItem[this.item.problemExtColumnName] !== '') {
+      this.showProduct = true
+    } else {
+      this.showProduct = false
+    }
+  },
+  created () {
+    if (this.item.multiSelectLengthSwitch) {
+      this.item.multiSelectRules = [{ required: true, validator: this.validMultiReplyTypeItems, trigger: 'change' }]
+    }
+    if (this.item.singleSelectLengthSwitch) {
+      this.item.singleSelectRules = [{ required: true, validator: this.validSingleReplyTypeItems, trigger: 'change' }]
+    }
+  },
+  methods: {
+    getActiveNames () {
+      this.innerActiveNames = this.dataList.map((item, index) => {
+        return index
+      })
+    },
+    validMultiReplyTypeItems (rule, value, callback) {
+      if (rule.required && value.length === 0) {
+        callback(new Error(this.item.multiSelectLabel + '不能为空'))
+      } else if (value.length > parseInt(this.item.multiSelectMaxLength)) {
+        callback(new Error('不可超过' + parseInt(this.item.multiSelectMaxLength) + '个枚举值'))
+      } else if (value.length < parseInt(this.item.multiSelectMinLength)) {
+        callback(new Error('不可少于' + parseInt(this.item.multiSelectMinLength) + '个枚举值'))
+      }
+      callback()
+    },
+    validSingleReplyTypeItems (rule, value, callback) {
+      if (rule.required && value.length === 0) {
+        callback(new Error(this.item.singleSelectLabel + '不能为空'))
+      } else if (value.length > parseInt(this.item.singleSelectMaxLength)) {
+        callback(new Error('不可超过' + parseInt(this.item.singleSelectMaxLength) + '个枚举值'))
+      } else if (value.length < parseInt(this.item.singleSelectMinLength)) {
+        callback(new Error('不可少于' + parseInt(this.item.singleSelectMinLength) + '个枚举值'))
+      }
+      callback()
+    },
+    deleteRow (index) {
+      this.$emit('remove', index)
+    },
+    addExt () {
+      this.showProduct = true
+    },
+    deleteExt () {
+      this.problemItem[this.item.problemExtColumnName] = ''
+      this.showProduct = false
+    },
+    changeReplyType (value, problemItem) {
+      if (value !== this.item.multiSelectCode) {
+        problemItem[this.item.multiSelectColumnName] = ''
+      }
+      if (value !== this.item.singleSelectCode) {
+        problemItem[this.item.singleSelectColumnName] = ''
+      }
+      this.$nextTick(() => {
+        this.$refs.researchForm.clearValidate(this.item.singleSelectColumnName)
+        this.$refs.researchForm.clearValidate(this.item.multiSelectColumnName)
+      })
+    }
+  }
+}
+</script>

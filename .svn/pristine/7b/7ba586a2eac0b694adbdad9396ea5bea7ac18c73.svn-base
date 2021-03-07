@@ -1,0 +1,51 @@
+<template>
+  <div class="asp-button-list"
+       :class="'is_' + position">
+    <template v-for="(item, index) in buttonList">
+      <asp-button v-if="operationShow(item)"
+                  :key="index"
+                  v-bind="item"
+                  :disabled="operationDisabled(item)"
+                  @click="handleClick(item)">{{item.label}}</asp-button>
+    </template>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'asp-button-list',
+  props: {
+    buttonList: {
+      type: Array,
+      default: () => []
+    },
+    position: {
+      type: String,
+      default: () => 'left'
+    }
+  },
+  methods: {
+    // 点击事件
+    handleClick (item) {
+      if (typeof item.clickFunc !== 'function') {
+        return
+      }
+      item.clickFunc && item.clickFunc()
+    },
+    // 控制是否禁用
+    operationDisabled (item) {
+      if (typeof item.disabledFunc === 'function') {
+        return item.disabledFunc()
+      }
+      return !!item.disabled
+    },
+    // 控制是否显示
+    operationShow (btn) {
+      if (typeof btn.showFunc === 'function') {
+        return btn.showFunc()
+      }
+      return btn.show === undefined ? true : !!btn.show
+    }
+  }
+}
+</script>

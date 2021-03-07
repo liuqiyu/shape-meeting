@@ -1,0 +1,8 @@
+import aspUpload from './src/upload.js'
+
+/* istanbul ignore next */
+aspUpload.install = function (Vue) {
+  Vue.component(aspUpload.name, aspUpload)
+}
+
+export default aspUpload

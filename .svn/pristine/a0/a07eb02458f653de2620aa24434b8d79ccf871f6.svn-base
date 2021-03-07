@@ -1,0 +1,7 @@
+export default {
+  name: 'asp-dropdown-item',
+  functional: true,
+  render (h, self) {
+    return h('el-dropdown-item', self.data, self.children)
+  }
+}

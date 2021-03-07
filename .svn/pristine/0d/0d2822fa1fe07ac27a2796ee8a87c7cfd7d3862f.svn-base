@@ -1,0 +1,78 @@
+<template>
+  <div class="asp-research-problemdetaillist"
+       :class="'is_' + position">
+       <el-collapse v-model="activeNames">
+        <el-collapse-item :name="'1'">
+          <template slot="title">
+            <span class="title"
+                  :style="{
+                'color': 'rgb(48,49,51,1)',
+                'font-size': '15px'
+              }">
+              <i class="el-icon-tickets"
+                 style="margin-right: 5px"></i>{{ item.collapseTitle }}
+            </span>
+          </template>
+          <!-- 调研问题详情控件 -->
+          <AspResearchProblemDetail
+            v-for="(problemItem, index) in model[item.problemListColumnName]"
+            :key="index"
+            :index="index"
+            :item="item"
+            :problemItem="problemItem"
+            :computeOptionList="computeOptionList"
+            :dataList="model[item.problemListColumnName]"></AspResearchProblemDetail>
+        </el-collapse-item>
+      </el-collapse>
+  </div>
+</template>
+
+<script>
+import AspResearchProblemDetail from '../../asp-research-problemdetail'
+export default {
+  name: 'asp-research-problemdetaillist',
+  components: { AspResearchProblemDetail },
+  props: {
+    item: {
+      type: Object,
+      default: () => { }
+    },
+    model: {
+      type: Object,
+      default: () => { }
+    },
+    position: {
+      type: String,
+      default: () => 'left'
+    },
+    computeOptionList: {
+      type: Array,
+      default: () => [
+        {
+          label: '多选',
+          value: '1'
+        },
+        {
+          label: '单选',
+          value: '2'
+        },
+        {
+          label: '布尔值(是/否)',
+          value: '3'
+        },
+        {
+          label: '开放式',
+          value: '4'
+        }
+      ]
+    }
+  },
+  data () {
+    return {
+      activeNames: ['1']
+    }
+  },
+  watch: {},
+  methods: {}
+}
+</script>

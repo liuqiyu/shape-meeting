@@ -1,0 +1,8 @@
+import aspTree from './src/tree.js'
+
+/* istanbul ignore next */
+aspTree.install = function (Vue) {
+  Vue.component(aspTree.name, aspTree)
+}
+
+export default aspTree

@@ -1,0 +1,8 @@
+import aspResearchProblemDetail from './src/main'
+
+/* istanbul ignore next */
+aspResearchProblemDetail.install = function (Vue) {
+  Vue.component(aspResearchProblemDetail.name, aspResearchProblemDetail)
+}
+
+export default aspResearchProblemDetail

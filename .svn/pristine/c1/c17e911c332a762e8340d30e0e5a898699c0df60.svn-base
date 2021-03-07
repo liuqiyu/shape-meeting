@@ -1,0 +1,58 @@
+.asp-tree-select {
+  width: 100%;
+  .el-select__tags {
+    flex-wrap: nowrap !important;
+    min-width: 120px !important;
+    .el-tag--info {
+      background-color: #f4f4f5;
+      border-color: #e9e9eb;
+      min-width: 60px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #909399;
+    }
+  }
+  /deep/ .el-tree {
+    .el-tree-node__label {
+      font-size: 12px;
+    }
+  }
+  .el-select-dropdown__item.selected {
+    font-weight: normal;
+  }
+  .top {
+    display: none;
+    position: absolute;
+    color: #c0c4cc;
+    cursor: pointer;
+    opacity: 0;
+    font-size: 14px;
+    z-index: 999;
+    right: 5px;
+  }
+  .show {
+    display: none;
+  }
+  &.el-select {
+    .el-tag__close.el-icon-close {
+      display: none;
+    }
+  }
+
+  .el-tree-node__label {
+    padding-right: 18px;
+  }
+  .my-tree .el-tree-node {
+    .is-leaf + .el-checkbox .el-checkbox__inner {
+      display: inline-block;
+    }
+    .el-checkbox .el-checkbox__inner {
+      display: none;
+    }
+  }
+}
+.el-scrollbar .el-scrollbar__view .el-select-dropdown__item {
+  height: auto;
+  padding: 0;
+}

@@ -1,0 +1,219 @@
+<template>
+  <el-table-column class-name="table-column"
+                   :sortable="col.sort === 'default' ? true : (col.sort ? 'custom' : false)"
+                   :prop="dropCol ? dropCol.key : col.key"
+                   :label="col.label"
+                   :width="dropCol ? dropCol.width : col.width"
+                   :fixed="col.fixed ? col.fixed: false"
+                   :min-width="col['min-width']"
+                   :render-header="col.renderHeader"
+                   :resizable="dropCol ? (dropCol.resizable === undefined ? false : dropCol.resizable) : (col.resizable === undefined ? true : col.resizable)"
+                   :show-overflow-tooltip="col.showTooltip !== undefined  ? col.showTooltip : true">
+    <template slot-scope="scope">
+      <!-- 可编辑区域 -->
+      <template v-if="scope.row.isEdit && col.editType">
+        <el-form-item :prop="'tableData.' + scope.$index + '.' + (dropCol ? dropCol.key : col.key)"
+                      :rules="col.rules"
+                      :class="scope.row.isEdit ? 'is-edit' : ''">
+          <!--input 文本-->
+          <el-input v-if="col.editType === 'input'"
+                    v-model="scope.row[dropCol ? dropCol.key : col.key]"
+                    :placeholder="col.placeholder"
+                    clearable
+                    :maxlength="col.maxlength"
+                    :style="{width: col.editWidth}"
+                    :show-word-limit="col['show-word-limit']"
+                    @input="handleFormInput(col, scope.$index, scope.row)"
+                    @change="handleFormChange(col, scope.$index, scope.row)">
+          </el-input>
+
+          <!-- 下拉框 -->
+          <el-select v-if="col.editType === 'select'"
+                     v-model="scope.row[dropCol ? dropCol.key : col.key]"
+                     placeholder="请选择"
+                     @input="handleFormInput(col, scope.$index, scope.row)"
+                     @change="handleFormChange(col, scope.$index, scope.row)">
+            <el-option v-for="(item, i) in col.options"
+                       :key="i"
+                       :label="col.optionsValue ? item[col.optionsValue] : item.label"
+                       :value="col.optionsLabel ? item[col.optionsLabel] : item.value">
+            </el-option>
+          </el-select>
+
+          <!-- 下拉框 -->
+          <el-select v-if="col.editType === 'selectOptionFromRow'"
+                     v-model="scope.row[dropCol ? dropCol.key : col.key]"
+                     placeholder="请选择"
+                     @input="handleFormInput(col, scope.$index, scope.row)"
+                     @change="handleFormChange(col, scope.$index, scope.row)">
+            <el-option v-for="(item, i) in scope.row.canChangeOptions"
+                       :key="i"
+                       :label="col.optionsValue ? item[col.optionsValue] : item.label"
+                       :value="col.optionsLabel ? item[col.optionsLabel] : item.value">
+            </el-option>
+          </el-select>
+
+          <!--DatePicker 日期选择器  date/week/month/year -->
+          <el-date-picker v-else-if="col.editType ===  'datePicker'"
+                          v-model="scope.row[dropCol ? dropCol.key : col.key]"
+                          v-bind="col.props"
+                          :format="col.timestamp"
+                          :value-format="col.timestamp"
+                          :style="{width: col.editWidth}"
+                          @input="handleFormInput(col, scope.$index, scope.row)"
+                          @change="handleFormChange(col, scope.$index, scope.row)">
+          </el-date-picker>
+        </el-form-item>
+
+      </template>
+      <!-- 不可编辑区域 -->
+      <template v-else>
+        <!--文本-->
+        <span v-if="dropCol ? (dropCol.type === undefined || dropCol.type === 'text') :(col.type === undefined || col.type === 'text')">
+          <span :style="{color: setColor(dropCol ? dropCol : col, scope.row)}">{{scope.row[dropCol ? dropCol.key : col.key]}}</span>
+        </span>
+
+        <!--告警-->
+        <asp-alarm-tag :type="handleTag(dropCol ? dropCol : col, scope.row)"
+                       v-else-if="dropCol ? dropCol.type === 'alarm' :col.type === 'alarm'"
+                       @handleClick="handleCommand(dropCol ? dropCol : col, scope.row)">{{scope.row[dropCol ? dropCol.key : col.key]}}</asp-alarm-tag>
+
+        <!--标签-->
+        <el-tag v-else-if="dropCol ? dropCol.type === 'tag' : col.type === 'tag'"
+                type="success">{{scope.row[dropCol ? dropCol.key : col.key]}}</el-tag>
+
+        <!--字体可点击按钮-->
+        <template v-else-if="dropCol ? dropCol.type === 'btn-text' : col.type === 'btn-text'">
+          <!-- 没有tooltip -->
+          <span v-if="!setToolTip(dropCol ? dropCol : col, scope.row)"
+                :style="{color: setColor(dropCol ? dropCol : col, scope.row)}"
+                class="text-btn"
+                @click.stop="handleCommand(dropCol ? dropCol : col, scope.row)">{{scope.row[dropCol ? dropCol.key : col.key]}}</span>
+          <!-- 有tooltip -->
+          <el-tooltip v-else
+                      class="item"
+                      effect="dark"
+                      :content="setToolTip(dropCol ? dropCol : col, scope.row)"
+                      placement="top">
+
+            <span :style="{color: setColor(dropCol ? dropCol : col, scope.row)}"
+                  class="text-btn"
+                  @click.stop="handleCommand(dropCol ? dropCol : col, scope.row)">{{scope.row[dropCol ? dropCol.key : col.key]}}</span>
+          </el-tooltip>
+        </template>
+
+        <!--字体图标可点击按钮-->
+        <el-tooltip v-else-if="dropCol ? dropCol.type === 'btn-icon' : col.type === 'btn-icon'"
+                    :disabled='!col.tooltip'
+                    :content="col.tooltipContent"
+                    placement="top">
+          <span :style="{color: setColor(dropCol ? dropCol : col, scope.row)}"
+                class="icon-btn iconfont"
+                :class='col.className'
+                @click.stop="handleIconCommand(dropCol ? dropCol : col, scope.row)"></span>
+        </el-tooltip>
+
+        <!--文本带红点-->
+        <div v-else-if="dropCol ? dropCol.type === 'btn-point' : col.type === 'point'"
+             class="text-point">
+          <span class="point"
+                :style="{background: setColor(dropCol ? dropCol : col, scope.row)}"></span>
+          {{scope.row[dropCol ? dropCol.key : col.key]}}
+        </div>
+
+        <render-item :col="dropCol ? dropCol : col"
+                     :row="scope.row"
+                     :index="scope.$index"
+                     v-else-if="dropCol ? dropCol.type === 'render' : col.type === 'render'"></render-item>
+      </template>
+    </template>
+  </el-table-column>
+</template>
+
+<script>
+import renderItem from './render'
+export default {
+  name: 'table-column',
+  components: { renderItem },
+  props: {
+    col: {
+      type: Object,
+      default: () => { }
+    },
+    dropCol: {
+      type: Object,
+      default: () => { }
+    },
+    changeTableData: {
+      type: Object,
+      default: () => { }
+    }
+  },
+  methods: {
+    setColor (col, row) {
+      if (typeof col.color === 'function') {
+        return col.color(row)
+      }
+      return col.color
+    },
+    setToolTip (col, row) {
+      if (typeof col.tooltip === 'function') {
+        return col.tooltip(row)
+      }
+      return col.tooltip
+    },
+    handleCommand (btn, row) {
+      if (!btn.func) {
+        return
+      }
+      btn.func(row)
+    },
+    handleIconCommand (btn, row) {
+      if (!btn.func) {
+        return
+      }
+      btn.func(row)
+    },
+    handleTag (tag, row) {
+      if (typeof tag.tag === 'function') {
+        return tag.tag(row)
+      }
+      return tag.tag
+    },
+    handleFormInput (col, index, row) {
+      if (typeof col.inputFunc !== 'function') {
+        return
+      }
+      col.inputFunc(row)
+      this.$set(this.changeTableData, index, row)
+    },
+    handleFormChange (col, index, row) {
+      if (typeof col.changeFunc !== 'function') {
+        return
+      }
+      col.changeFunc(row)
+      this.$set(this.changeTableData, index, row)
+    }
+  }
+}
+</script>
+
+<style scoped lang="scss">
+.text-btn {
+  color: #409eff;
+  cursor: pointer;
+}
+.icon-btn {
+  cursor: pointer;
+}
+.text-point {
+  .point {
+    display: inline-block;
+    margin-right: 10px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #fff;
+  }
+}
+</style>

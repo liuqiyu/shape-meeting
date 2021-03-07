@@ -1,0 +1,8 @@
+import aspRadioButton from './src/radio-button.js'
+
+/* istanbul ignore next */
+aspRadioButton.install = function (Vue) {
+  Vue.component(aspRadioButton.name, aspRadioButton)
+}
+
+export default aspRadioButton

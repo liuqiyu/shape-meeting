@@ -1,0 +1,7 @@
+export default {
+  name: 'asp-slider',
+  functional: true,
+  render (h, self) {
+    return h('el-slider', self.data, self.children)
+  }
+}

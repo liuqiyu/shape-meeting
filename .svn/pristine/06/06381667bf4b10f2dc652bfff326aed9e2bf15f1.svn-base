@@ -1,0 +1,7 @@
+export default {
+  name: 'asp-steps',
+  functional: true,
+  render (h, self) {
+    return h('el-steps', self.data, self.children)
+  }
+}

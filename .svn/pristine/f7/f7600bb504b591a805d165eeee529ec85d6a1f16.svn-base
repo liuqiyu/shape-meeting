@@ -1,0 +1,8 @@
+import aspButton from './src/button.js'
+
+/* istanbul ignore next */
+aspButton.install = function (Vue) {
+  Vue.component(aspButton.name, aspButton)
+}
+
+export default aspButton

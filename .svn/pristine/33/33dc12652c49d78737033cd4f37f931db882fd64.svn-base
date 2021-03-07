@@ -1,0 +1,8 @@
+import aspImage from './src/image.js'
+
+/* istanbul ignore next */
+aspImage.install = function (Vue) {
+  Vue.component(aspImage.name, aspImage)
+}
+
+export default aspImage

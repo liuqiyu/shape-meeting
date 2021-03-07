@@ -1,0 +1,8 @@
+import aspRadioGroup from './src/radio-group.js'
+
+/* istanbul ignore next */
+aspRadioGroup.install = function (Vue) {
+  Vue.component(aspRadioGroup.name, aspRadioGroup)
+}
+
+export default aspRadioGroup

@@ -1,0 +1,8 @@
+import aspColorPicker from './src/color-picker.js'
+
+/* istanbul ignore next */
+aspColorPicker.install = function (Vue) {
+  Vue.component(aspColorPicker.name, aspColorPicker)
+}
+
+export default aspColorPicker

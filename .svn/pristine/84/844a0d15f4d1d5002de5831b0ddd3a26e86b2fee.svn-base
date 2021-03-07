@@ -1,0 +1,55 @@
+.asp-smart-form__research {
+    .el-form-item {
+      margin: 0 !important;
+  
+      .el-form-item__label {
+        font-size: 14px;
+        padding: 0 12px;
+        top: 4px;
+        font-weight: bold;
+        position: relative;
+        color: #333;
+      }
+  
+      .el-form-item__content {
+        padding: 5px;
+      }
+  
+      .el-form-item__error {
+        position: relative;
+      }
+    }
+  
+    .el-input__inner,
+    .el-textarea__inner {
+      padding-left: 5px;
+    }
+  
+    // label样式
+    .label-style {
+      position: absolute;
+      height: 100%;
+      background: #F9FBFF;
+      border-right: 1px solid #E1E7F3;
+      border-left: 1px solid #E1E7F3;
+    }
+  
+    // 布局控件旁边的基本表单控件
+    .form-item-box-layout+.form-item-box-basic {
+      border-top: 1px solid #E1E7F3;
+    }
+    // 基本表单控件样式
+    .form-item-box-basic {
+      border-top: 1px solid #E1E7F3;
+      border-bottom: 1px solid #E1E7F3;
+      border-right: 1px solid #E1E7F3;
+    }
+    
+    .form-item-box-basic+.form-item-box-basic {
+      border-top: none;
+    }
+    .form-item-box {
+      position: relative;
+    }
+  }
+  

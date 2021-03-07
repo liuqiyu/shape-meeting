@@ -1,0 +1,8 @@
+import aspPagination from './src/pagination.js'
+
+/* istanbul ignore next */
+aspPagination.install = function (Vue) {
+  Vue.component(aspPagination.name, aspPagination)
+}
+
+export default aspPagination

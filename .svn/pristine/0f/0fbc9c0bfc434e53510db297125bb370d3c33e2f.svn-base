@@ -1,0 +1,6 @@
+import { CascaderPanel } from 'element-ui'
+
+export default {
+  name: 'asp-cascader-panel',
+  extends: CascaderPanel
+}

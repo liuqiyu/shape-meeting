@@ -1,0 +1,54 @@
+/*
+ * @Description: router
+ * @Author: liuqiyu
+ * @Date: 2019-12-30 14:35:07
+ * @LastEditors  : liuqiyu
+ * @LastEditTime : 2020-01-13 16:50:38
+ */
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+Vue.use(VueRouter)
+
+// fix: 解决 Uncaught (in promise) NavigationDuplicated {_name: "NavigationDuplicated", name: "NavigationDuplic 报错
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push (location) {
+  return originalPush.call(this, location).catch(err => err)
+}
+
+const routes = [
+  {
+    path: '',
+    name: 'list',
+    meta: {
+      menuIndex: '/list',
+      keepAlive: false
+    },
+    component: () => import(/* webpackChunkName: "project" */ '@/views/list')
+  },
+  {
+    path: '/problemList',
+    name: 'problemList',
+    meta: {
+      menuIndex: '/problemList',
+      keepAlive: false
+    },
+    component: () => import('@/views/research/addProblemList')
+  },
+  {
+    path: '/problemDetailList',
+    name: 'problemDetailList',
+    meta: {
+      menuIndex: '/problemDetailList',
+      keepAlive: false
+    },
+    component: () => import('@/views/research/problemDetailList')
+  }
+]
+
+const router = new VueRouter({
+  mode: 'hash',
+  base: process.env.BASE_URL,
+  routes
+})
+
+export default router

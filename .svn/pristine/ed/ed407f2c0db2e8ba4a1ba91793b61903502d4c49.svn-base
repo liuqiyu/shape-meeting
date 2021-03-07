@@ -1,0 +1,8 @@
+import aspMenuItemGroup from './src/menu-item-group.js'
+
+/* istanbul ignore next */
+aspMenuItemGroup.install = function (Vue) {
+  Vue.component(aspMenuItemGroup.name, aspMenuItemGroup)
+}
+
+export default aspMenuItemGroup

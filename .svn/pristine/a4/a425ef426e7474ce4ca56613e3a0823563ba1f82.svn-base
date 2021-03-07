@@ -1,0 +1,42 @@
+.asp-smart-form__research {
+  .el-collapse {
+    border: 1px solid #DEE8F8;
+  
+    .el-collapse-item {
+      width: 100%;
+  
+      .el-collapse-item__header {
+        position: relative;
+        height: unset;
+        line-height: unset;
+        padding: 0 15px;
+        font-weight: 600;
+        border-bottom: 1px solid #DEE8F8;
+        display: flex;
+  
+        >.title {
+          z-index: 2;
+          font-size: 15px;
+          flex: none;
+        }
+  
+        >i {
+          z-index: 2;
+          flex: none;
+        }
+      }
+  
+      .el-collapse-item__wrap {
+        .el-collapse-item__content {
+          padding: 5px;
+        }
+      }
+    }
+  }
+}
+
+.hide-collapse-title{
+  .el-collapse-item .el-collapse-item__header{
+    display: none;
+  }
+}

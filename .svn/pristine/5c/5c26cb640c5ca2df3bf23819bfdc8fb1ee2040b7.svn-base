@@ -1,0 +1,8 @@
+import aspCarousel from './src/carousel.js'
+
+/* istanbul ignore next */
+aspCarousel.install = function (Vue) {
+  Vue.component(aspCarousel.name, aspCarousel)
+}
+
+export default aspCarousel

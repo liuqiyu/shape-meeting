@@ -1,0 +1,8 @@
+import aspAside from './src/aside.js'
+
+/* istanbul ignore next */
+aspAside.install = function (Vue) {
+  Vue.component(aspAside.name, aspAside)
+}
+
+export default aspAside

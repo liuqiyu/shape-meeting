@@ -1,0 +1,8 @@
+import aspCard from './src/popconfirm.js'
+
+/* istanbul ignore next */
+aspCard.install = function (Vue) {
+  Vue.component(aspCard.name, aspCard)
+}
+
+export default aspCard

@@ -1,0 +1,8 @@
+import aspBreadcrumb from './src/breadcrumb.js'
+
+/* istanbul ignore next */
+aspBreadcrumb.install = function (Vue) {
+  Vue.component(aspBreadcrumb.name, aspBreadcrumb)
+}
+
+export default aspBreadcrumb

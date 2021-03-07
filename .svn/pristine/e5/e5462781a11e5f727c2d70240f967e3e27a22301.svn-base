@@ -1,0 +1,8 @@
+import aspTimeline from './src/timeline.js'
+
+/* istanbul ignore next */
+aspTimeline.install = function (Vue) {
+  Vue.component(aspTimeline.name, aspTimeline)
+}
+
+export default aspTimeline

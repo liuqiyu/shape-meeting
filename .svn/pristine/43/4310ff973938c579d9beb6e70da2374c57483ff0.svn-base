@@ -1,0 +1,8 @@
+import aspPopconfirm from './src/popconfirm.js'
+
+/* istanbul ignore next */
+aspPopconfirm.install = function (Vue) {
+  Vue.component(aspPopconfirm.name, aspPopconfirm)
+}
+
+export default aspPopconfirm

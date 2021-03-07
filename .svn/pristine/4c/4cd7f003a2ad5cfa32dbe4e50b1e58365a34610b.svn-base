@@ -1,0 +1,8 @@
+import aspResearchReplyDetail from './src/main'
+
+/* istanbul ignore next */
+aspResearchReplyDetail.install = function (Vue) {
+  Vue.component(aspResearchReplyDetail.name, aspResearchReplyDetail)
+}
+
+export default aspResearchReplyDetail

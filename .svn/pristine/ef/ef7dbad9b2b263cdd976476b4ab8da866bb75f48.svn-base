@@ -1,0 +1,7 @@
+export default {
+  name: 'asp-header',
+  functional: true,
+  render (h, self) {
+    return h('el-header', self.data, self.children)
+  }
+}

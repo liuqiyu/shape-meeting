@@ -1,0 +1,6 @@
+import { Submenu } from 'element-ui'
+
+export default {
+  name: 'asp-submenu',
+  extends: Submenu
+}

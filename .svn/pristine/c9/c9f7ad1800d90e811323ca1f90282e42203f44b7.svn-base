@@ -1,0 +1,94 @@
+<template>
+  <div class="asp-icon-detail"
+       :class="'is_' + position">
+    <el-table
+      :data="problemTableData[problemItem.problemDataName]"
+      stripe
+      border
+      class="asp-table"
+    >
+      <el-table-column v-for="(column, index) in problemTableData[problemItem.problemColumnName]" :key="index" :prop="column.columnName" :label="column.label" :align="position">
+        <template slot-scope="scoped">
+          <i v-if="isShow(index, scoped.row[column.columnName])" class="padding-left-10 el-icon-check"></i>
+          <span v-else-if="index === 0 || !showType.isIconShow">{{ scoped.row[column.columnName] }}</span>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'asp-icon-detail',
+  computed: {
+    getActiveNames () {
+      return this.collapseGroup.map((item, index) => {
+        return index
+      })
+    }
+  },
+  props: {
+    problemItem: {
+      type: Object,
+      default: () => {}
+    },
+    model: {
+      type: Object,
+      default: () => {}
+    },
+    problemTableData: {
+      type: Object,
+      default: () => {}
+    },
+    position: {
+      type: String,
+      default: () => 'left'
+    }
+  },
+  data () {
+    return {
+      activeNames1: ['1'],
+      collapseGroup: this.model.collapseGroup,
+      showProduct: false,
+      showType: {},
+      replyWayOptionList: [
+        {
+          label: '多选',
+          value: '1'
+        },
+        {
+          label: '单选',
+          value: '2'
+        },
+        {
+          label: '布尔值(是/否)',
+          value: '3'
+        },
+        {
+          label: '开放式',
+          value: '4'
+        }
+      ]
+    }
+  },
+  created () {
+    console.log('problemColumnName======', this.problemItem.problemColumnName)
+    console.log('problemTableData======', this.problemTableData)
+  },
+  methods: {
+    getConvertName (code, list) {
+      for (let i = 0; i < list.length; i++) {
+        if (list[i].value === code) {
+          return list[i].label
+        } else {
+          return ''
+        }
+      }
+    },
+    isShow (index, value) {
+      this.showType = this.problemTableData[this.problemItem.problemTypeDescName] === '多选' ? this.problemItem.multiSelect : this.problemItem.singleSelect
+      return index !== 0 && this.showType.isIconShow && value === this.showType.iconShowValue
+    }
+  }
+}
+</script>

@@ -1,0 +1,353 @@
+<template>
+  <div class="table-list"
+       style="width: 100%">
+    <el-form ref="tableForm"
+             :model="tData"
+             :style="{height: options.tableHeight || '100%'}"
+             label-width="0">
+      <el-table ref="table"
+                v-bind="attr"
+                class="asp-table"
+                :highlight-current-row="options['highlight-current-row']"
+                tooltip-effect="dark"
+                :stripe="options.stripe === false ? options.stripe : true "
+                fit
+                border
+                :span-method="options.objectSpanMethod"
+                :row-style="options.classNameMethod"
+                :show-summary="options.showSummary"
+                :summary-method="options.summaryMethod"
+                :height="tableHeight"
+                :max-height="options.maxHeight"
+                :emptyText="emptyText"
+                :data="tData.tableData"
+                :default-sort="options.defaultSort ? {prop: options.defaultSort.prop, order: options.defaultSort.order} : {}"
+                style="width: 100%"
+                @sort-change="sortChange"
+                @row-dblclick="rowDblClick"
+                @current-change="handleSingleChange"
+                @selection-change="handleSelectionChange">
+
+        <el-table-column v-if="options.expand"
+                         type="expand">
+          <template slot-scope="props">
+            <slot name="expand"
+                  :data="props"></slot>
+          </template>
+        </el-table-column>
+
+        <el-table-column v-if="options.type === 'selection'"
+                         type="selection"
+                         fixed="left"
+                         class-name="table_selection"
+                         width="40">
+        </el-table-column>
+
+        <el-table-column v-if="options.index === undefined ? true : options.index"
+                         prop="index"
+                         fixed="left"
+                         class-name="table_index"
+                         label="序号"
+                         width="45">
+        </el-table-column>
+
+        <el-table-column v-if="options.type === 'radio'"
+                         fixed="left"
+                         width="36">
+          <template slot-scope="scope">
+            <el-radio class="table-single-selection"
+                      v-model="tableSingleSelection"
+                      :label="scope.$index"
+                      @change="handleSingleSelection">
+            </el-radio>
+          </template>
+        </el-table-column>
+
+        <template v-for="(col, i) in columns">
+          <template v-if="columnShow(col)">
+            <table-column-parent v-if="col.isParent"
+                                 :col="col"
+                                 :changeTableData="changeTableData"
+                                 :key="i"></table-column-parent>
+            <table-column v-else
+                          :col="col"
+                          :dropCol="dropColumns[i]"
+                          :changeTableData="changeTableData"
+                          :key="i"></table-column>
+          </template>
+        </template>
+
+        <el-table-column v-if="operation && operation.options.length > 0 && (operation.show || operation.show === undefined)"
+                         header-align="left"
+                         :fixed="operation.fixed"
+                         :label="operation.label"
+                         :width="operation.width">
+          <template slot-scope="scope">
+            <template v-for="(btn, i) in operation.options">
+              <el-button v-if="btn.type === 'button'"
+                         class="table-btn"
+                         :key="btn.label+i"
+                         :icon="btn.icon"
+                         :size="btn.size || 'mini'"
+                         v-show="operationShow(btn, scope.row)"
+                         :type="btn.type || 'primary'"
+                         :disabled="operationDisabled(btn, scope.row)"
+                         @click.stop="handleCommand(btn, scope.row, scope.$index)">
+                {{handleLabel(btn, scope.row)}}
+              </el-button>
+              <el-tooltip v-else-if="btn.type === 'icon'"
+                          class="item"
+                          effect="dark"
+                          v-show="operationShow(btn, scope.row)"
+                          :content="handleLabel(btn, scope.row)"
+                          placement="top-start"
+                          :key="btn.label+i">
+                <el-button class="operation-icon"
+                           type="text"
+                           size="mini"
+                           :class="btn.icon"
+                           :disabled="operationDisabled(btn, scope.row)"
+                           @click.stop="handleCommand(btn, scope.row, scope.$index)"></el-button>
+              </el-tooltip>
+            </template>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-form>
+  </div>
+</template>
+
+<script>
+import { debounce, deepClone } from '@/utils'
+import tableColumn from './table-column'
+import tableColumnParent from './table-column-parent'
+export default {
+  name: 'table-list',
+  props: {
+    // 参数
+    attr: {
+      type: Object,
+      default: () => { }
+    },
+    // 表格选项
+    options: {
+      type: Object,
+      default: () => { }
+    },
+    // 表头
+    columns: {
+      type: Array,
+      default: () => []
+    },
+    // 拖动后的表头
+    dropColumns: {
+      type: Array,
+      default: () => []
+    },
+    // 按钮
+    operation: {
+      type: Object,
+      default: () => { }
+    },
+    // 数据
+    tableData: {
+      type: Array,
+      default: () => []
+    },
+    changeTableData: {
+      type: Object,
+      default: () => { }
+    },
+    // 数据
+    tableDataTemp: {
+      type: Array,
+      default: () => []
+    },
+    // 表格无数据显示
+    emptyText: {
+      type: String,
+      default: '暂无数据'
+    },
+    timeStamp: {
+      type: [String, Number],
+      default: ''
+    }
+  },
+  watch: {
+    tableData (val) {
+      this.$set(this.tData, 'tableData', val)
+    }
+  },
+  components: {
+    tableColumn,
+    tableColumnParent
+  },
+  computed: {
+    tableHeight () {
+      return '100%'
+    }
+  },
+  data () {
+    return {
+      multipleSelection: [],
+      tableSingleSelection: '',
+      tData: {
+        tableData: []
+      }
+    }
+  },
+  mounted () {
+    this.initTable()
+  },
+  methods: {
+    initTable () {
+      if (this.columns.length > 0) {
+        // 判断是否每一项列都有传值，若true，则将最后一项的值去掉
+        const allWidth = this.columns.every((item) => {
+          return item.width && item.width.length > 0
+        })
+        if (allWidth) {
+          this.columns[this.columns.length - 1].width = ''
+        }
+      }
+    },
+    handleCommand (btn, row, index) {
+      if (!btn.func) {
+        return
+      }
+      btn.func(row, index, deepClone(this.tableDataTemp))
+    },
+    handleLabel (btn, row) {
+      if (typeof btn.label === 'function') {
+        return btn.label(row)
+      }
+      return btn.label
+    },
+    // 选中
+    handleSelectionChange (val) {
+      if (!this.options.selectionChange) {
+        return
+      }
+      this.options.selectionChange(val)
+    },
+    // 单选
+    handleSingleChange (val) {
+      if (!this.options.singleChange) {
+        return
+      }
+      this.options.singleChange(val)
+    },
+    // 双击行
+    rowDblClick (row, column, event) {
+      // console.log(row, column, event)
+      if (!this.options.rowDblClick) {
+        return
+      }
+      this.options.rowDblClick(row)
+    },
+    operationDisabled (btn, row) {
+      if (typeof btn.disabled === 'function') {
+        return btn.disabled(row)
+      }
+      return !!btn.disabled
+    },
+    operationShow (btn, row) {
+      if (!btn.show) {
+        return true
+      }
+      if (typeof btn.show === 'function') {
+        return btn.show(row)
+      }
+      return btn.show
+    },
+    columnShow (column) {
+      if (typeof column.show === 'function') {
+        return column.show(column)
+      }
+      return column.show === undefined ? true : column.show
+    },
+    // 自定义排序 custom
+    sortChange ({ column, prop, order }) {
+      this.$emit('sortChange', { prop, order })
+    },
+    // validateFieldTableForm (success, error) {
+    //   this.$refs['tableForm'].validate((valid) => {
+    //     if (valid) {
+    //       if (typeof success === 'function') {
+    //         success()
+    //       }
+    //     } else {
+    //       if (typeof error === 'function') {
+    //         error()
+    //       }
+    //       return false;
+    //     }
+    //   })
+    // },
+    validateTableForm (success, error) {
+      this.$refs['tableForm'].validate((valid) => {
+        if (valid) {
+          if (typeof success === 'function') {
+            success()
+          }
+        } else {
+          if (typeof error === 'function') {
+            error()
+          }
+          return false
+        }
+      })
+    },
+    // 表格单选
+    handleSingleSelection () {
+      console.log(this.tableSingleSelection)
+      if (!this.options.singleSelection) {
+        return
+      }
+      this.options.singleSelection(this.tData.tableData[this.tableSingleSelection])
+    }
+  }
+}
+</script>
+
+<style scoped lang="scss">
+@import "src/assets/css/variable";
+
+.table-btn {
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.asp-table {
+  .text-btn {
+    color: #409eff;
+    cursor: pointer;
+  }
+  .text-point {
+    .point {
+      display: inline-block;
+      margin-right: 10px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #fff;
+    }
+  }
+  /deep/ .table_index {
+    padding-left: 0px !important;
+  }
+
+  .table_selection {
+    .cell {
+      padding-right: 0;
+    }
+  }
+}
+
+.operation-icon {
+  margin: 0 0 0 0 !important;
+  padding: 0 5px !important;
+  cursor: pointer;
+  font-size: 18px;
+}
+</style>

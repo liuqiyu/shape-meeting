@@ -1,0 +1,6 @@
+import { Popconfirm } from 'element-ui'
+
+export default {
+  name: 'asp-popconfirm',
+  extends: Popconfirm
+}

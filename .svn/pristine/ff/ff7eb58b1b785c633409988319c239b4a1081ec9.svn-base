@@ -1,0 +1,94 @@
+<template>
+  <div class="asp-research-replylist"
+       :class="'is_' + position">
+    <el-collapse v-model="activeNames">
+      <el-collapse-item :name="'1'">
+        <template slot="title">
+          <span class="title"
+                :style="{
+              'color': 'rgb(48,49,51,1)',
+              'font-size': '15px'
+            }">
+            <i class="el-icon-tickets"
+                style="margin-right: 5px"></i>调研问题
+          </span>
+        </template>
+        <template v-for="(item, index) in model[problemItem.problemTableName]">
+          <el-collapse v-model="getActiveNames" :key="index" style="margin-bottom: 10px;">
+            <el-collapse-item :name="index">
+              <template slot="title">
+                <span class="title"
+                      :style="{
+                    'color': 'rgb(48,49,51,1)',
+                    'font-size': '15px'
+                  }">
+                  <i class="el-icon-tickets"
+                      style="margin-right: 5px"></i>调研问题{{ index + 1 }}：{{ item[problemItem.problemName] }} ({{ item[problemItem.problemTypeDescName] }})
+                </span>
+              </template>
+              <aspResearchReply :model="model" :problemItem="problemItem" :problemTableData="item"></aspResearchReply>
+            </el-collapse-item>
+          </el-collapse>
+        </template>
+      </el-collapse-item>
+    </el-collapse>
+  </div>
+</template>
+
+<script>
+import aspResearchReply from '../../asp-research-reply'
+export default {
+  name: 'asp-research-replylist',
+  components: {
+    aspResearchReply
+  },
+  computed: {
+    getActiveNames () {
+      return this.collapseGroup.map((item, index) => {
+        return index
+      })
+    }
+  },
+  props: {
+    problemItem: {
+      type: Object,
+      default: () => {}
+    },
+    model: {
+      type: Object,
+      default: () => {}
+    },
+    position: {
+      type: String,
+      default: () => 'left'
+    }
+  },
+  data () {
+    return {
+      activeNames: ['1'],
+      collapseGroup: this.model[this.problemItem.problemTableName],
+      showProduct: false,
+      replyWayOptionList: [
+        {
+          label: '多选',
+          value: '1'
+        },
+        {
+          label: '单选',
+          value: '2'
+        },
+        {
+          label: '布尔值(是/否)',
+          value: '3'
+        },
+        {
+          label: '开放式',
+          value: '4'
+        }
+      ]
+    }
+  },
+  created () {},
+  methods: {}
+}
+</script>

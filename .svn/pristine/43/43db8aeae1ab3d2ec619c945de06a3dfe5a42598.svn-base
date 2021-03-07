@@ -1,0 +1,8 @@
+import aspFormItem from './src/form-item.js'
+
+/* istanbul ignore next */
+aspFormItem.install = function (Vue) {
+  Vue.component(aspFormItem.name, aspFormItem)
+}
+
+export default aspFormItem

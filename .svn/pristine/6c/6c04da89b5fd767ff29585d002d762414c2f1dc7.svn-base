@@ -1,0 +1,8 @@
+import aspBacktop from './src/backtop.js'
+
+/* istanbul ignore next */
+aspBacktop.install = function (Vue) {
+  Vue.component(aspBacktop.name, aspBacktop)
+}
+
+export default aspBacktop

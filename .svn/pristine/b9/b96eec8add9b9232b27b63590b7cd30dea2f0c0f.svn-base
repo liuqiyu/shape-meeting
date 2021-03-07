@@ -1,0 +1,13 @@
+.asp-button-list {
+  .is_left {
+    text-align: left;
+  }
+
+  .is_center {
+    text-align: center;
+  }
+
+  .is_right {
+    text-align: right;
+  }
+}

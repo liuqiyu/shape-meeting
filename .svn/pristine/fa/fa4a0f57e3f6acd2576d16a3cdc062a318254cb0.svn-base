@@ -1,0 +1,8 @@
+import aspRow from './src/row.js'
+
+/* istanbul ignore next */
+aspRow.install = function (Vue) {
+  Vue.component(aspRow.name, aspRow)
+}
+
+export default aspRow

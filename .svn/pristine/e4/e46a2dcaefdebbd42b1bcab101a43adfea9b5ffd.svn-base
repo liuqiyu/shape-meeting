@@ -1,0 +1,8 @@
+import aspMenuItem from './src/menu-item.js'
+
+/* istanbul ignore next */
+aspMenuItem.install = function (Vue) {
+  Vue.component(aspMenuItem.name, aspMenuItem)
+}
+
+export default aspMenuItem

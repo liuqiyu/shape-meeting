@@ -1,0 +1,389 @@
+<template>
+  <el-form-item :class="'form-item__' + item.type"
+                class="form-item"
+                :label="item.label"
+                :prop="item.columnName"
+                :rules="item.rules || []">
+    <!--input 文本-->
+    <el-input v-if="item.type === undefined || item.type === 'text' || item.type === 'number'"
+              :style="{width: item.width || null}"
+              :type="item.type === undefined ? 'text' : item.type"
+              :value="value"
+              @input="bindChange"
+              :disabled="isDisabled(item)"
+              :placeholder="item.placeholder"
+              clearable>
+      <i v-if="!!item.icon"
+         :slot="doIcon(item)"
+         class="el-input__icon"
+         :class="typeof item.icon === 'object' ? item.icon.class : item.icon"></i>
+      <template v-if="!!item.complex"
+                :slot="doComplex(item)">
+        {{ typeof item.complex === 'object' ? item.complex.val : item.complex }}</template>
+    </el-input>
+
+    <!--select 下拉框-->
+    <el-select v-else-if="item.type === 'select' && !item.showRadio"
+               popper-class='query-form-selector'
+               :popper-append-to-body='true'
+               :style="{width: item.width || null}"
+               :disabled="isDisabled(item)"
+               :value="value"
+               :filterable="item.filterable"
+               :remote="item.remote"
+               :remoteMethod="item.remoteMethod"
+               :loading="item.loading"
+               :multiple="item.multiple"
+               :multiple-limit="item.selectMultipleLimit"
+               :collapse-tags="item.collapse"
+               :placeholder="item.placeholder"
+               :clearable="item.clearable === undefined ? true : item.clearable"
+               @change="bindChange">
+      <el-option v-for="(cell, index) in doSelectOptions()"
+                 :key="index"
+                 :label="cell[item.optionsLabel] ? cell[item.optionsLabel] :cell.label"
+                 :value="cell[item.optionsValue] ? cell[item.optionsValue] :cell.value">
+      </el-option>
+    </el-select>
+    <!-- 带单选按钮的下拉框 -->
+    <asp-radio-group-select v-else-if="item.type === 'selectRadio'"
+                            :popper-class="item.popperClass"
+                            :popper-append-to-body='item.popperAppendToBody'
+                            :width="item.width"
+                            :disabled="isDisabled(item)"
+                            :selectRadioValue="item.selectRadioValue"
+                            :filterable="item.filterable"
+                            :multiple="item.multiple"
+                            :multiple-limit="item.selectMultipleLimit"
+                            :collapse-tags="item.collapse"
+                            :placeholder="item.placeholder"
+                            :radioGroups="item.radioGroups"
+                            :type="item.radioGroupType"
+                            :clearable="item.clearable === undefined ? true : item.clearable"
+                            @radioChange="radioChange"
+                            @visibleChange='changeVisible'>
+    </asp-radio-group-select>
+    <!-- 旧 -->
+    <el-select v-else-if="item.type === 'select' && item.showRadio"
+               popper-class='query-form-selector query-form-selector-radio'
+               :popper-append-to-body='true'
+               :style="{width: item.width || null}"
+               :disabled="isDisabled(item)"
+               :value="item.selectRadioValue"
+               :filterable="item.filterable"
+               :multiple="item.multiple"
+               :multiple-limit="item.selectMultipleLimit"
+               :collapse-tags="item.collapse"
+               :placeholder="item.placeholder"
+               @visible-change='changeVisible'>
+      <el-option label="隐藏"
+                 style="display:none"
+                 value='0'>
+      </el-option>
+      <el-radio-group v-model="item.radioValue"
+                      v-if='item.showRadio'
+                      @change="radioChange">
+        <div v-for='(cell,index) in doSelectOptions()'
+             class="selector-item"
+             :key='cell.label+index'
+             @click.stop>
+          <el-radio :label="cell.label">{{cell.label}}</el-radio>
+          <div v-if="cell.showInput">
+            <div>{{cell.inputLeftText || ''}}</div>
+            <div class="selector"
+                 v-if='cell.selectOptions'>
+              <i class="el-icon-arrow-down"></i>
+              <select ref="select"
+                      v-model="cell.selectValue">
+                <option v-for="item in cell.selectOptions"
+                        :key="item.value"
+                        :value="item.value">{{item.label}}</option>
+              </select>
+            </div>
+            <el-input v-model="cell.inputValue"
+                      :type="cell.type"
+                      placeholder="请输入"></el-input>
+            <div>{{cell.inputRightText || ''}}</div>
+          </div>
+        </div>
+      </el-radio-group>
+    </el-select>
+    <!--daterange 日期选择器-->
+    <el-date-picker v-else-if="item.type === 'daterange'"
+                    :value="value"
+                    type="daterange"
+                    :format="item.format || 'yyyy-MM-dd'"
+                    :value-format="item.valueFormat || 'yyyy-MM-dd'"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    :picker-options="pickerOptions"
+                    @input="datePickerChange"
+                    :clearable="item.clearable === undefined ? true : item.clearable">
+    </el-date-picker>
+
+    <!--datetimerange 时间选择器-->
+    <el-date-picker v-else-if="item.type === 'datetimerange'"
+                    :value="value"
+                    type="datetimerange"
+                    :format="item.format || 'yyyy-MM-dd HH:mm:ss'"
+                    :value-format="item.valueFormat || 'yyyy-MM-dd HH:mm:ss'"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    :picker-options="pickerOptions"
+                    @input="datePickerChange"
+                    :clearable="item.clearable === undefined ? true : item.clearable">
+    </el-date-picker>
+
+    <!--date 日期选择器  date/week/month/year -->
+    <el-date-picker v-else-if="['date', 'week', 'month', 'year'].includes(item.type)"
+                    :value="value"
+                    :type="item.type"
+                    :picker-options="item.pickerOptions"
+                    :placeholder="item.placeholder"
+                    :value-format="item.valueFormat || 'yyyy-MM-dd'"
+                    @input="datePickerChange"
+                    :clearable="item.clearable === undefined ? true : item.clearable">
+    </el-date-picker>
+
+    <!--tree-select 下拉树-->
+    <asp-tree-select v-else-if="item.type === 'selectTree'"
+                     :data="item.data"
+                     :value="value"
+                     :lazy="item.lazy"
+                     :load="item.load"
+                     :props="item.props"
+                     :show-checkbox="item.showCheckbox"
+                     :clearable="item.clearable === undefined ? true : item.clearable"
+                     :multipleLimit="item.multipleLimit"
+                     :filterable="item.filterable"
+                     :checkLeaf="item.checkLeaf"
+                     :getLeaf="item.getLeaf"
+                     :placeholder="item.placeholder"
+                     :appendToBody="item.appendToBody"
+                     :disabled="isDisabled(item)"
+                     :defaultCheckedKeys="item.defaultCheckedKeys"
+                     :defaultKeysType="item.defaultKeysType"
+                     :thisRender="item.thisRender"
+                     :clickDisable="item.clickDisable"
+                     @cusclearable="cusclearable"
+                     @input="bindChange"></asp-tree-select>
+    <!-- tab栏 -->
+    <div class="tab"
+         v-else-if="item.type ==='radioGroup'">
+      <el-radio-group v-model="item.value"
+                      @change='bindChange'>
+        <el-radio-button v-for='(radioItem,index) in item.options'
+                         :label="radioItem.value"
+                         :key='index'>{{radioItem.label}}</el-radio-button>
+      </el-radio-group>
+    </div>
+  </el-form-item>
+
+</template>
+
+<script>
+import moment from 'moment'
+export default {
+  name: 'form-item',
+  props: ['value', 'item', 'lazy', 'load'],
+  mounted () {
+    // console.log(this.item)
+    // console.log(this.value)
+    // this.model.name = '123';
+  },
+  data () {
+    const _t = this
+    return {
+      datea: '',
+      data: [],
+      selectDate: '', // 时间选择器首次点击选中的日期
+      pickerOptions: {
+        disabledDate (time) {
+          if (_t.item.disabledDate) {
+            let range1 = _t.item.disabledDate[0]// 开始可选的范围 往前推日期
+            let range2 = _t.item.disabledDate[1]// 开始可选的范围 往后推日期
+            let range3 = _t.item.disabledDate[2]// 选择开始时间后的范围 往后推日期
+            let range4 = _t.item.disabledDate[3]// 选择开始时间后的范围 往前推日期
+            if ((range1 || range1 === 0) && (range2 || range2 === 0) && !(range3 || range3 === 0) && !(range4 || range4 === 0)) {
+              return time.getTime() < moment(new Date()).add(range1, 'days') || time.getTime() > moment(new Date(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1)).add(range2, 'days')
+            } else if ((range1 || range1 === 0) && !(range2 || range2 === 0) && !(range3 || range3 === 0) && !(range4 || range4 === 0)) {
+              return time.getTime() < moment(new Date()).add(range1, 'days')
+            } else if (!(range1 || range1 === 0) && (range2 || range2 === 0) && !(range3 || range3 === 0) && !(range4 || range4 === 0)) {
+              return time.getTime() > moment(new Date(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1)).add(range2, 'days')
+            } else if ((range1 || range1 === 0) && (range2 || range2 === 0) && (range3 || range3 === 0) && (range4 || range4 === 0)) {
+              return time > moment(new Date(_t.selectDate)).add(range3, 'days') || time < moment(new Date(_t.selectDate)).add(range4, 'days') || time < moment(new Date()).add(range1, 'days') || time > moment(new Date(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1)).add(range2, 'days')
+            } else if (!(range1 || range1 === 0) && (range2 || range2 === 0) && (range3 || range3 === 0) && (range4 || range4 === 0)) {
+              return time > moment(new Date(_t.selectDate)).add(range3, 'days') || time < moment(new Date(_t.selectDate)).add(range4, 'days') || time > moment(new Date(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1)).add(range2, 'days')
+            } else if ((range1 || range1 === 0) && !(range2 || range2 === 0) && (range3 || range3 === 0) && (range4 || range4 === 0)) {
+              return time > moment(new Date(_t.selectDate)).add(range3, 'days') || time < moment(new Date(_t.selectDate)).add(range4, 'days') || time < moment(new Date()).add(range1, 'days')
+            } else if (!(range1 || range1 === 0) && !(range2 || range2 === 0) && (range3 || range3 === 0) && (range4 || range4 === 0)) {
+              return time > moment(new Date(_t.selectDate)).add(range3, 'days') || time < moment(new Date(_t.selectDate)).add(range4, 'days')
+            }
+          }
+        },
+        onPick ({ maxDate, minDate }) {
+          _t.selectDate = maxDate ? '' : minDate.getTime()
+        }
+      }
+    }
+  },
+  methods: {
+    bindChange (e) {
+      if (e === null) {
+        this.selectDate = ''
+      }
+      this.$emit('input', e)
+      if (typeof this.item.func === 'function') {
+        return this.item.func(e)
+      }
+    },
+    cusclearable () {
+      if (typeof this.item.funcClearable === 'function') {
+        return this.item.funcClearable()
+      }
+    },
+    datePickerChange (val) {
+      this.bindChange(val)
+    },
+    isDisabled (item) {
+      if (typeof item.disabled === 'function') {
+        const obj = { key: item.columnName, model: this.model }
+        return item.disabled(obj)
+      }
+      return !!item.disabled
+    },
+    doIcon (item) {
+      if (typeof item.icon === 'object') {
+        return item.icon.slot
+      }
+      return 'suffix'
+    },
+    doComplex (item) {
+      if (typeof item.complex === 'object') {
+        return item.complex.slot
+      }
+      return 'append'
+    },
+    doSelectOptions () {
+      if (this.item.options) {
+        return this.item.options
+      }
+    },
+    returnLabelWidth (item) {
+      const length = item.label.replace(/[^\x00-\xff]/g, '*').length
+      if (item.rules) {
+        let num = Number(14 * length) + 23
+        return num + 'px'
+      } else {
+        let num = Number(14 * length) + 12
+        return num + 'px'
+      }
+    },
+    radioChange (value) {
+      // 主要是控制选择器显示
+      if (!this.item.radioGroupType || this.item.radioGroupType === 'default') {
+        this.item.selectRadioValue = this.item.radioGroups[0].options.filter((i) => {
+          return this.item.radioGroups[0].radioValue === i.value
+        })[0].label
+      } else {
+        let labels = []
+        this.item.radioGroups.forEach(item => {
+          labels.push(item.options.find(i => item.radioValue === i.value).label)
+        })
+        this.item.selectRadioValue = labels.join(';')
+      }
+
+      this.$emit('input', value)
+      if (!this.item.func) {
+        return
+      }
+      this.item.func(this.item, value)
+    },
+    changeVisible (e) {
+      if (!this.item.visibleFun) {
+        return
+      }
+      this.item.visibleFun(this.item, e)
+    }
+  }
+}
+</script>
+
+<style scoped lang="scss">
+.query-form-selector {
+  .selector-item {
+    font-size: 14px;
+    height: 40px;
+    line-height: 40px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    > div {
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      /deep/ input {
+        padding: 0 10px;
+      }
+      .selector {
+        position: relative;
+        i {
+          font-size: 14px;
+          position: absolute;
+          right: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #c0c4cc;
+        }
+        select {
+          position: relative;
+          cursor: pointer;
+          z-index: 2;
+          padding-right: 20px;
+          margin-right: 5px;
+          border: 1px solid #dcdfe6;
+          // outline: none; //清除select聚焦时候的边框颜色
+          border-radius: 5px;
+          width: auto;
+          height: 28px;
+          line-height: 28px;
+          appearance: none; //隐藏select的下拉图标
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          color: #666;
+          padding-left: 6px;
+          background: transparent;
+          option {
+            background: #fff;
+            color: #666;
+          }
+        }
+      }
+    }
+  }
+}
+/deep/ .query-form-selector-radio {
+  width: 260px;
+}
+.form-item {
+  display: inline-block;
+  width: 25%;
+  .tab {
+    width: auto;
+    height: 28px;
+    line-height: 28px;
+  }
+}
+// .form-item__daterange,
+.form-item__datetimerange {
+  width: 25%;
+}
+@media screen and (max-width: 1500px) {
+  .form-item__daterange,
+  .form-item__datetimerange {
+    width: 50%;
+  }
+}
+</style>

@@ -1,0 +1,8 @@
+import aspCascader from './src/cascader.js'
+
+/* istanbul ignore next */
+aspCascader.install = function (Vue) {
+  Vue.component(aspCascader.name, aspCascader)
+}
+
+export default aspCascader

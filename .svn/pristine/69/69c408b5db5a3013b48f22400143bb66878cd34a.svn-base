@@ -1,0 +1,7 @@
+export default {
+  name: 'asp-footer',
+  functional: true,
+  render (h, self) {
+    return h('el-footer', self.data, self.children)
+  }
+}

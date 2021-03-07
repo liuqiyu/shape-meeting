@@ -1,0 +1,8 @@
+import aspTransfer from './src/transfer.js'
+
+/* istanbul ignore next */
+aspTransfer.install = function (Vue) {
+  Vue.component(aspTransfer.name, aspTransfer)
+}
+
+export default aspTransfer

@@ -1,0 +1,8 @@
+import aspProgress from './src/progress.js'
+
+/* istanbul ignore next */
+aspProgress.install = function (Vue) {
+  Vue.component(aspProgress.name, aspProgress)
+}
+
+export default aspProgress

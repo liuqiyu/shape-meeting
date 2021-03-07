@@ -1,0 +1,7 @@
+export default {
+  name: 'asp-upload',
+  functional: true,
+  render (h, self) {
+    return h('el-upload', self.data, self.children)
+  }
+}

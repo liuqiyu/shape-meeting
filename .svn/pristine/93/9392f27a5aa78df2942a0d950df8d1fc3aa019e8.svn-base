@@ -1,0 +1,8 @@
+import aspOption from './src/option.js'
+
+/* istanbul ignore next */
+aspOption.install = function (Vue) {
+  Vue.component(aspOption.name, aspOption)
+}
+
+export default aspOption

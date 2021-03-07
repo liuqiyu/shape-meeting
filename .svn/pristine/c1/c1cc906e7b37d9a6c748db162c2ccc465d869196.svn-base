@@ -1,0 +1,8 @@
+import aspTimeSelect from './src/time-select.js'
+
+/* istanbul ignore next */
+aspTimeSelect.install = function (Vue) {
+  Vue.component(aspTimeSelect.name, aspTimeSelect)
+}
+
+export default aspTimeSelect

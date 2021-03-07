@@ -1,0 +1,8 @@
+import aspAvatar from './src/avatar.js'
+
+/* istanbul ignore next */
+aspAvatar.install = function (Vue) {
+  Vue.component(aspAvatar.name, aspAvatar)
+}
+
+export default aspAvatar

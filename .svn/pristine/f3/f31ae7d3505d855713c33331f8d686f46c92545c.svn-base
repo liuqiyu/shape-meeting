@@ -1,0 +1,8 @@
+import aspMenu from './src/tabs.js'
+
+/* istanbul ignore next */
+aspMenu.install = function (Vue) {
+  Vue.component(aspMenu.name, aspMenu)
+}
+
+export default aspMenu

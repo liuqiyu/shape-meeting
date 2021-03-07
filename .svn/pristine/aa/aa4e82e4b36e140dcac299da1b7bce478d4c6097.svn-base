@@ -1,0 +1,7 @@
+export default {
+  name: 'asp-tooltip',
+  functional: true,
+  render (h, self) {
+    return h('el-tooltip', self.data, self.children)
+  }
+}

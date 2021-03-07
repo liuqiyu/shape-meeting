@@ -1,0 +1,7 @@
+export default {
+  name: 'asp-radio',
+  functional: true,
+  render (h, self) {
+    return h('el-radio', self.data, self.children)
+  }
+}

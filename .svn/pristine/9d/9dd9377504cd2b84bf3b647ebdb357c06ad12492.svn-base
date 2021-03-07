@@ -1,0 +1,300 @@
+<template>
+  <div style="width:380px">
+    <asp-button type="primary"
+                @click="handleAdd">点击</asp-button>
+    <asp-smart-dialog v-bind="dialogOption"
+                      :view.sync="dialogOption.view"
+                      :visible.sync="dialogOption.show">
+      <component :is="dialogOption.view"
+                 :dialog-data="dialogData"
+                 @close="closeDynamicDialog">
+      </component>
+    </asp-smart-dialog>
+    <asp-upload-file></asp-upload-file>
+    <asp-tree-select :selectAttributes="selectAttributes"
+                     :value="value"
+                     :props="treeProps"
+                     :treeAttributes="treeAttributes"></asp-tree-select>
+    <asp-radio-group-select :attributes="radioGroupAttributes"
+                            :selectRadioValue="selectRadioValue"
+                            :methods="methods"
+                            :radioGroups="radioGroupsSecond"></asp-radio-group-select>
+  </div>
+</template>
+
+<script>
+import Add from './add'
+
+export default {
+  name: 'list',
+  data () {
+    return {
+      input1: '',
+      attributes: { drag: false },
+      selectAttributes: {},
+      treeProps: {
+        value: 'value', // ID字段名
+        label: 'label', // 显示名称
+        children: 'children' // 子级字段名
+      },
+      value: [],
+      methods: {
+        visibleChange (e) {
+          console.log(999, e)
+        }
+      },
+      selectRadioValue: '',
+      treeAttributes: {
+        data: [
+          { value: 1, label: '鸡翅', children: [{ value: 11, label: '鸡翅根' }] },
+          { value: 2, label: '鱼' },
+          { value: 3, label: '牛肉' }
+        ]
+      },
+      radioGroupAttributes: {},
+      radioGroupsSecond: [
+        {
+          title: '机房最高温度T1',
+          inputLeftText: 'T1',
+          type: 'second',
+          options: [
+            {
+              value: 1,
+              label: '无限制'
+            },
+            {
+              value: 2,
+              label: '23<=T1<=27'
+            },
+            {
+              value: 3,
+              type: 'number',
+              inputLeftValue: '',
+              inputRightValue: '',
+              label: '自定义',
+              showInput: true,
+              selectLeftValue: 2,
+              selectRightValue: 2,
+              selectLeftOptions: [
+                {
+                  value: 1,
+                  label: '<'
+                },
+                {
+                  value: 2,
+                  label: '<='
+                }
+              ],
+              selectRightOptions: [
+                {
+                  value: 1,
+                  label: '<'
+                },
+                {
+                  value: 2,
+                  label: '<='
+                }
+              ]
+            }
+          ],
+          radioValue: 2
+        },
+        {
+          title: '机房最低温度T2',
+          inputLeftText: 'T2',
+          type: 'second',
+          options: [
+            {
+              value: 1,
+              label: '无限制'
+            },
+            {
+              value: 2,
+              label: '18<=T2<=23'
+            },
+            {
+              type: 'number',
+              value: 3,
+              inputLeftValue: '',
+              inputRightValue: '',
+              label: '自定义',
+              showInput: true,
+              selectLeftValue: 2,
+              selectRightValue: 2,
+              selectLeftOptions: [
+                {
+                  value: 1,
+                  label: '<'
+                },
+                {
+                  value: 2,
+                  label: '<='
+                }
+              ],
+              selectRightOptions: [
+                {
+                  value: 1,
+                  label: '<'
+                },
+                {
+                  value: 2,
+                  label: '<='
+                }
+              ]
+            }
+          ],
+          radioValue: 2
+        }
+      ],
+      radioGroups: [
+        {
+          radioValue: 0,
+          options: [
+            {
+              value: 0,
+              label: '无限制'
+            },
+            {
+              value: 1,
+              label: 'D>3天'
+            },
+            {
+              value: 2,
+              type: 'number',
+              inputValue: '',
+              label: '自定义',
+              showInput: true,
+              selectValue: 1,
+              selectOptions: [
+                {
+                  value: 1,
+                  label: '大于'
+                },
+                {
+                  value: 2,
+                  label: '小于'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          radioValue: 0,
+          options: [
+            {
+              value: 0,
+              label: '无限制'
+            },
+            {
+              value: 1,
+              label: 'D>3天'
+            },
+            {
+              value: 2,
+              type: 'number',
+              inputValue: '',
+              label: '自定义',
+              showInput: true,
+              selectValue: 1,
+              selectOptions: [
+                {
+                  value: 1,
+                  label: '大于'
+                },
+                {
+                  value: 2,
+                  label: '小于'
+                }
+              ]
+            }
+          ]
+        }],
+      list: [{
+        label: '定时输出',
+        type: 'text',
+        class: 'iconfont icondingshishuchu',
+        clickFunc: () => {
+          alert(1)
+        }
+      }, {
+        label: '刷新',
+        type: 'text',
+        class: 'iconfont iconshuaxin1',
+        clickFunc: () => {
+
+        }
+      }, {
+        label: '导出',
+        type: 'text',
+        class: 'iconfont iconshangchuan',
+        clickFunc: () => {
+          return true
+        }
+      }, {
+        label: '另存为',
+        type: 'text',
+        class: 'iconfont iconbaocun1',
+        showFunc: () => {
+          return true
+        },
+        clickFunc: () => {
+          this.outputSubreport()
+        }
+      }, {
+        label: '删除',
+        type: 'text',
+        class: 'iconfont iconshanchu-baobiaojitoubutab',
+        showFunc: () => {
+          return true
+        },
+        clickFunc: () => {
+          this.delSubreport()
+        }
+      }],
+      dialogOption: {
+        show: false,
+        view: null,
+        title: '参数设置',
+        width: '600px'
+      },
+      dialogData: {} // 弹窗的数据
+    }
+  },
+  components: {
+    Add
+  },
+  methods: {
+    handleAdd () {
+      this.showDynamicDialog('Add', '新增告警知识', '560px')
+    },
+    closeDynamicDialog (boolean) {
+      if (boolean) {
+      }
+      this.dialogOption = {
+        show: false,
+        view: null,
+        title: '',
+        width: '0px'
+      }
+    },
+    showDynamicDialog (view, title, width = '560px') {
+      this.dialogOption.show = true
+      this.dialogOption.view = view
+      this.dialogOption.title = title
+      this.dialogOption.width = width
+    }
+  }
+}
+</script>
+
+<style scoped lang="scss">
+.asp-header {
+  background-color: #b3c0d1;
+  color: #333;
+  line-height: 60px;
+}
+
+.asp-aside {
+  color: #333;
+}
+</style>

@@ -1,0 +1,15 @@
+/*
+T01 21 16 B     T02 21 14 B     T03 21 12 B     T04 21 12 N     T05 22 12 N
+T06 23 12 N     T07 $d 12 N     T08 $t 12 N     T09 12 12 N     T10 11 16 B
+T11 11 14 B     T12 11 12 B     T13 11 12 N     T14 -- 12 B     T15 21 14 N
+T16 22 14 N     T17 白 12 B     T18 -- 12 B     T19 白 12 N
+*/
+
+// 主色
+$--color-primary: #2681ff;
+
+// 黄色
+$--layout--border--color: #e6a23c;
+
+// 拖拽调颜色  红色
+$--drag-color: #F56C6C

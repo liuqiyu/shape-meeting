@@ -1,0 +1,8 @@
+import aspAlert from './src/alert.js'
+
+/* istanbul ignore next */
+aspAlert.install = function (Vue) {
+  Vue.component(aspAlert.name, aspAlert)
+}
+
+export default aspAlert

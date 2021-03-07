@@ -1,0 +1,8 @@
+import aspTable from './src/table.js'
+
+/* istanbul ignore next */
+aspTable.install = function (Vue) {
+  Vue.component(aspTable.name, aspTable)
+}
+
+export default aspTable

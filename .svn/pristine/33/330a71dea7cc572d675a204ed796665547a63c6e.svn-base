@@ -1,0 +1,8 @@
+import aspQueryForm from '../asp-query-table/src/query-form'
+
+/* istanbul ignore next */
+aspQueryForm.install = function (Vue) {
+  Vue.component(aspQueryForm.name, aspQueryForm)
+}
+
+export default aspQueryForm

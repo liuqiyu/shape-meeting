@@ -1,0 +1,133 @@
+<template>
+  <div class="asp-research-problemdetail"
+       :class="'is_' + position">
+    <el-collapse v-model="innerActiveNames" style="margin-bottom: 10px;">
+      <el-collapse-item :name="index">
+        <template slot="title">
+          <span class="title"
+                :style="{
+              'color': 'rgb(48,49,51,1)',
+              'font-size': '15px'
+            }">
+            <i class="el-icon-tickets"
+                style="margin-right: 5px"></i>{{ item.collapseTitle }} {{ index + 1 }}
+          </span>
+        </template>
+        <el-form
+          ref="researchForm"
+          class="asp-smart-form__research"
+          :model="problemItem"
+          :size="'small'"
+          :label-width="'160px'"
+          :label-position="'right'">
+          <div
+            class="form-item-box form-item-box-basic"
+            style="word-break: break-all; width: 100%;"
+          >
+            <div class="label-style" style="width: 160px;"></div>
+            <el-form-item
+              :prop="item.problemDescColumnName"
+              :label="item.problemDescLabel + '：'">
+              <p class="normalLabel labelStyle">{{ problemItem[item.problemDescColumnName] }}</p>
+            </el-form-item>
+          </div>
+          <div
+            v-if="problemItem[item.problemExtColumnName] !== ''"
+            class="form-item-box form-item-box-basic"
+            style="word-break: break-all; width: 100%;"
+          >
+            <div class="label-style" style="width: 160px;"></div>
+            <el-form-item :label="item.problemExtLabel + '：'">
+              <p class="normalLabel labelStyle">{{ problemItem[item.problemExtColumnName] }}</p>
+            </el-form-item>
+          </div>
+          <div
+            class="form-item-box form-item-box-basic"
+            style="word-break: break-all; width: 100%;"
+          >
+            <div class="label-style" style="width: 160px;"></div>
+            <el-form-item :label="item.replyTypeLabel + '：'" :prop="item.replyTypeColumnName">
+              <p class="normalLabel labelStyle">{{ getConvertName(problemItem[item.replyTypeColumnName]) }}</p>
+            </el-form-item>
+          </div>
+          <div
+            v-show="problemItem[item.replyTypeColumnName] === item.multiSelectCode"
+            class="form-item-box form-item-box-basic"
+            style="word-break: break-all; width: 100%;"
+          >
+            <div class="label-style" style="width: 160px;"></div>
+            <el-form-item :label="item.multiSelectLabel + '：'" :prop="item.multiSelectColumnName">
+              <p class="normalLabel labelStyle">{{ problemItem[item.multiSelectColumnName].join(',') }}</p>
+            </el-form-item>
+            </div>
+            <div
+              v-show="problemItem[item.replyTypeColumnName] === item.singleSelectCode"
+              class="form-item-box form-item-box-basic"
+              style="word-break: break-all; width: 100%;"
+            >
+              <div class="label-style" style="width: 160px;"></div>
+              <el-form-item :label="item.singleSelectLabel + '：'" :prop="item.singleSelectColumnName">
+                <p class="normalLabel labelStyle">{{ problemItem[item.singleSelectColumnName].join(',') }}</p>
+              </el-form-item>
+            </div>
+        </el-form>
+      </el-collapse-item>
+    </el-collapse>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'asp-research-problemdetail',
+  computed: {},
+  props: {
+    item: {
+      type: Object,
+      default: () => {}
+    },
+    position: {
+      type: String,
+      default: () => 'left'
+    },
+    problemItem: {
+      type: Object,
+      default: () => {}
+    },
+    dataList: {
+      type: Array,
+      default: () => []
+    },
+    index: {
+      type: Number,
+      default: () => 0
+    },
+    computeOptionList: {
+      type: Array,
+      default: () => []
+    }
+  },
+  data () {
+    return {
+      innerActiveNames: []
+    }
+  },
+  watch: {},
+  created () {
+    this.innerActiveNames = this.dataList.map((item, index) => {
+      return index
+    })
+  },
+  mounted () {},
+  methods: {
+    getConvertName (code) {
+      let convertLabel = ''
+      for (let i = 0; i < this.computeOptionList.length; i++) {
+        if (this.computeOptionList[i].value === code) {
+          convertLabel = this.computeOptionList[i].label
+        }
+      }
+      return convertLabel
+    }
+  }
+}
+</script>

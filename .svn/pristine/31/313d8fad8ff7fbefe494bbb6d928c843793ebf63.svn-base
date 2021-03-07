@@ -1,0 +1,8 @@
+import aspLink from './src/link.js'
+
+/* istanbul ignore next */
+aspLink.install = function (Vue) {
+  Vue.component(aspLink.name, aspLink)
+}
+
+export default aspLink

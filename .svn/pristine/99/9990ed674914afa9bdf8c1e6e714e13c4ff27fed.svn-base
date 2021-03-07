@@ -1,0 +1,8 @@
+import aspTag from './src/tag.js'
+
+/* istanbul ignore next */
+aspTag.install = function (Vue) {
+  Vue.component(aspTag.name, aspTag)
+}
+
+export default aspTag

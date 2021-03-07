@@ -1,0 +1,8 @@
+import aspDropdownItem from './src/dropdown-item.js'
+
+/* istanbul ignore next */
+aspDropdownItem.install = function (Vue) {
+  Vue.component(aspDropdownItem.name, aspDropdownItem)
+}
+
+export default aspDropdownItem

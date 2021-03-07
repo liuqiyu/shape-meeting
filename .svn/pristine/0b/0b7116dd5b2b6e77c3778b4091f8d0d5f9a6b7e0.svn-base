@@ -1,0 +1,8 @@
+import aspPopover from './src/popover.js'
+
+/* istanbul ignore next */
+aspPopover.install = function (Vue) {
+  Vue.component(aspPopover.name, aspPopover)
+}
+
+export default aspPopover

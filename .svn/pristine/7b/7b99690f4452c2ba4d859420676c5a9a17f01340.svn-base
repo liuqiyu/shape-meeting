@@ -1,0 +1,8 @@
+import aspDrawer from './src/drawer.js'
+
+/* istanbul ignore next */
+aspDrawer.install = function (Vue) {
+  Vue.component(aspDrawer.name, aspDrawer)
+}
+
+export default aspDrawer

@@ -1,0 +1,8 @@
+import aspSubmenu from './src/submenu.js'
+
+/* istanbul ignore next */
+aspSubmenu.install = function (Vue) {
+  Vue.component(aspSubmenu.name, aspSubmenu)
+}
+
+export default aspSubmenu

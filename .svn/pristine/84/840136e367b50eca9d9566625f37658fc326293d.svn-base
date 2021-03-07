@@ -1,0 +1,8 @@
+import aspTimePicker from './src/time-picker.js'
+
+/* istanbul ignore next */
+aspTimePicker.install = function (Vue) {
+  Vue.component(aspTimePicker.name, aspTimePicker)
+}
+
+export default aspTimePicker

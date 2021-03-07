@@ -1,0 +1,8 @@
+import aspResearchReplyList from './src/main'
+
+/* istanbul ignore next */
+aspResearchReplyList.install = function (Vue) {
+  Vue.component(aspResearchReplyList.name, aspResearchReplyList)
+}
+
+export default aspResearchReplyList

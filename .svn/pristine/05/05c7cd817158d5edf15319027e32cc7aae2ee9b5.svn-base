@@ -1,0 +1,8 @@
+import aspAutocomplete from './src/autocomplete.js'
+
+/* istanbul ignore next */
+aspAutocomplete.install = function (Vue) {
+  Vue.component(aspAutocomplete.name, aspAutocomplete)
+}
+
+export default aspAutocomplete

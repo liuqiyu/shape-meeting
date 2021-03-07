@@ -1,0 +1,8 @@
+import aspTableColumn from './src/table-column.js'
+
+/* istanbul ignore next */
+aspTableColumn.install = function (Vue) {
+  Vue.component(aspTableColumn.name, aspTableColumn)
+}
+
+export default aspTableColumn

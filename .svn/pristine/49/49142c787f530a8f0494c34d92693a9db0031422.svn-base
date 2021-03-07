@@ -1,0 +1,8 @@
+import aspTableList from '../query-table/src/table-list'
+
+/* istanbul ignore next */
+aspTableList.install = function (Vue) {
+  Vue.component(aspTableList.name, aspTableList)
+}
+
+export default aspTableList

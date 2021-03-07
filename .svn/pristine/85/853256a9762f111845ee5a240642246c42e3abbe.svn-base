@@ -1,0 +1,8 @@
+import aspCalendar from './src/calendar.js'
+
+/* istanbul ignore next */
+aspCalendar.install = function (Vue) {
+  Vue.component(aspCalendar.name, aspCalendar)
+}
+
+export default aspCalendar

@@ -1,0 +1,8 @@
+import aspDivider from './src/divider.js'
+
+/* istanbul ignore next */
+aspDivider.install = function (Vue) {
+  Vue.component(aspDivider.name, aspDivider)
+}
+
+export default aspDivider

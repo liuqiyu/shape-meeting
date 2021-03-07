@@ -1,0 +1,8 @@
+import aspSwitch from './src/switch.js'
+
+/* istanbul ignore next */
+aspSwitch.install = function (Vue) {
+  Vue.component(aspSwitch.name, aspSwitch)
+}
+
+export default aspSwitch

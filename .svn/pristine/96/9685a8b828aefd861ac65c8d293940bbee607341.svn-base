@@ -1,0 +1,8 @@
+import aspDialog from './src/dialog.js'
+
+/* istanbul ignore next */
+aspDialog.install = function (Vue) {
+  Vue.component(aspDialog.name, aspDialog)
+}
+
+export default aspDialog

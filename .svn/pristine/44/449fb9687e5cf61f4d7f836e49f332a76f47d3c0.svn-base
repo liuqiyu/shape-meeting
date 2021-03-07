@@ -1,0 +1,25 @@
+/**
+ * 获取基础组件
+ * @param {*} context
+ * @param {*} ignore
+ */
+const getComponents = (context, ignore) => {
+  const components = []
+  context.keys().forEach((key) => {
+    if (key !== ignore && context(key).default) {
+      const obj = context(key).default
+      components.push(obj)
+    }
+  })
+  return components
+}
+
+const elements = getComponents(require.context('./', true, /\/index.js$/), './index.js')
+
+elements.install = function (Vue) {
+  elements.forEach(component => {
+    Vue.component(component.name, component)
+  })
+}
+
+export default elements

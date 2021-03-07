@@ -1,0 +1,8 @@
+import aspTimelineItem from './src/timeline-item.js'
+
+/* istanbul ignore next */
+aspTimelineItem.install = function (Vue) {
+  Vue.component(aspTimelineItem.name, aspTimelineItem)
+}
+
+export default aspTimelineItem

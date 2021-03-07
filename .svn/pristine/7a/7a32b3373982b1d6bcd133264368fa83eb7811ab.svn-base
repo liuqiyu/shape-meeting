@@ -1,0 +1,8 @@
+import aspHeader from './src/header.js'
+
+/* istanbul ignore next */
+aspHeader.install = function (Vue) {
+  Vue.component(aspHeader.name, aspHeader)
+}
+
+export default aspHeader

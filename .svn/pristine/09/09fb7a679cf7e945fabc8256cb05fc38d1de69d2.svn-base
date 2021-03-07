@@ -1,0 +1,8 @@
+import aspResearchProblemList from './src/main'
+
+/* istanbul ignore next */
+aspResearchProblemList.install = function (Vue) {
+  Vue.component(aspResearchProblemList.name, aspResearchProblemList)
+}
+
+export default aspResearchProblemList

@@ -1,0 +1,6 @@
+import { Input } from 'element-ui'
+
+export default {
+  name: 'asp-input',
+  extends: Input
+}

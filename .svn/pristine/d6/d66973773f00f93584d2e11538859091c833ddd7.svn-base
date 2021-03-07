@@ -1,0 +1,8 @@
+import aspContainer from './src/container.js'
+
+/* istanbul ignore next */
+aspContainer.install = function (Vue) {
+  Vue.component(aspContainer.name, aspContainer)
+}
+
+export default aspContainer

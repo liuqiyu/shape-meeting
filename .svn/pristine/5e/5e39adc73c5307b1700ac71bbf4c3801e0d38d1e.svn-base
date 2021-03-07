@@ -1,0 +1,8 @@
+import aspCascaderPanel from './src/cascader-panel.js'
+
+/* istanbul ignore next */
+aspCascaderPanel.install = function (Vue) {
+  Vue.component(aspCascaderPanel.name, aspCascaderPanel)
+}
+
+export default aspCascaderPanel

@@ -1,0 +1,8 @@
+import aspSmartDialog from './src/main'
+
+/* istanbul ignore next */
+aspSmartDialog.install = function (Vue) {
+  Vue.component(aspSmartDialog.name, aspSmartDialog)
+}
+
+export default aspSmartDialog

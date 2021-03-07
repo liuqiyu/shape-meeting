@@ -1,0 +1,8 @@
+import aspTooltip from './src/tooltip.js'
+
+/* istanbul ignore next */
+aspTooltip.install = function (Vue) {
+  Vue.component(aspTooltip.name, aspTooltip)
+}
+
+export default aspTooltip

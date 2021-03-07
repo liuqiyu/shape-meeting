@@ -1,0 +1,8 @@
+import aspSelect from './src/select.js'
+
+/* istanbul ignore next */
+aspSelect.install = function (Vue) {
+  Vue.component(aspSelect.name, aspSelect)
+}
+
+export default aspSelect

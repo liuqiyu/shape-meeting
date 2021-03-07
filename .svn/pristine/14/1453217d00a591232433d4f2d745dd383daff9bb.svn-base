@@ -1,0 +1,92 @@
+import jsbn from './jsbn.js'
+import rng from './rng.js'
+
+export const asp_RSAKey = {
+  parseBigInt: function (b, a) {
+    return new jsbn.BigInteger(b, a)
+  },
+  linebrk: function (c, d) {
+    var a = ''
+    var b = 0
+    while (b + d < c.length) {
+      a += c.substring(b, b + d) + '\n'
+      b += d
+    } return a + c.substring(b, c.length)
+  },
+  byte2Hex: function (a) {
+    if (a < 16) {
+      return '0' + a.toString(16)
+    } else {
+      return a.toString(16)
+    }
+  },
+  pkcs1pad2: function (e, h) {
+    if (h < e.length + 11) {
+      // alert('Message too long for RSA')
+      return null
+    } var g = []
+    var d = e.length - 1
+    while (d >= 0 && h > 0) {
+      var f = e.charCodeAt(d--)
+      if (f < 128) {
+        g[--h] = f
+      } else {
+        if ((f > 127) && (f < 2048)) {
+          g[--h] = (f & 63) | 128
+          g[--h] = (f >> 6) | 192
+        } else {
+          g[--h] = (f & 63) | 128
+          g[--h] = ((f >> 6) & 63) | 128
+          g[--h] = (f >> 12) | 224
+        }
+      }
+    } g[--h] = 0
+    var b = new rng.SecureRandom()
+    var a = []
+    while (h > 2) {
+      a[0] = 0
+      while (a[0] === 0) {
+        b.nextBytes(a)
+      } g[--h] = a[0]
+    } g[--h] = 2
+    g[--h] = 0
+    return new jsbn.BigInteger(g)
+  },
+  RSAKey: function () {
+    this.n = null
+    this.e = 0
+    this.d = null
+    this.p = null
+    this.q = null
+    this.dmp1 = null
+    this.dmq1 = null
+    this.coeff = null
+  },
+  RSASetPublic: function (b, a) {
+    if (b != null && a != null && b.length > 0 && a.length > 0) {
+      this.n = this.parseBigInt(b, 16)
+      this.e = parseInt(a, 16)
+    } else {
+      // alert('Invalid RSA public key')
+    }
+  },
+  RSADoPublic: function (a) {
+    return a.modPowInt(this.e, this.n)
+  },
+  RSAEncrypt: function (d) {
+    var a = this.pkcs1pad2(d, (this.n.bitLength() + 7) >> 3)
+    if (a == null) {
+      return null
+    } var e = this.RSADoPublic(a)
+    if (e == null) {
+      return null
+    } var b = e.toString(16)
+    if ((b.length & 1) === 0) {
+      return b
+    } else {
+      return '0' + b
+    }
+  }
+}
+
+export default asp_RSAKey

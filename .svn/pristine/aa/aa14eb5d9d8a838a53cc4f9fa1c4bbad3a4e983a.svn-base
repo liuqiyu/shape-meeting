@@ -1,0 +1,8 @@
+import aspCollapse from './src/collapse.js'
+
+/* istanbul ignore next */
+aspCollapse.install = function (Vue) {
+  Vue.component(aspCollapse.name, aspCollapse)
+}
+
+export default aspCollapse

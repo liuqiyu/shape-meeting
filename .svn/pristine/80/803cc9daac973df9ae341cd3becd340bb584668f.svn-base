@@ -1,0 +1,8 @@
+import aspInput from './src/input.js'
+
+/* istanbul ignore next */
+aspInput.install = function (Vue) {
+  Vue.component(aspInput.name, aspInput)
+}
+
+export default aspInput

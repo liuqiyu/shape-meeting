@@ -1,0 +1,6 @@
+import { Popover } from 'element-ui'
+
+export default {
+  name: 'asp-popover',
+  extends: Popover
+}

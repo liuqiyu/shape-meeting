@@ -1,0 +1,49 @@
+/*
+ * @Description: 检测数据类型
+ * @Author: liuqiyu
+ */
+
+// 是否数组
+export const asp_IsArray = (obj) => {
+  return Object.prototype.toString.call(obj) === '[object Array]'
+}
+
+// 是否对象
+export const asp_IsObject = (obj) => {
+  return Object.prototype.toString.call(obj) === '[object Object]'
+}
+
+// 是否函数
+export const asp_IsFunction = (obj) => {
+  return Object.prototype.toString.call(obj) === '[object Function]'
+}
+
+// 是否数值
+export const asp_IsNumber = (obj) => {
+  return Object.prototype.toString.call(obj) === '[object Number]'
+}
+
+// 是否字符串
+export const asp_IsString = (obj) => {
+  return Object.prototype.toString.call(obj) === '[object String]'
+}
+
+// 是否Boolean
+export const asp_IsBoolean = (obj) => {
+  return Object.prototype.toString.call(obj) === '[object Boolean]'
+}
+
+// 是否Null
+export const asp_IsNull = (obj) => {
+  return Object.prototype.toString.call(obj) === '[object Null]'
+}
+
+// 是否Undefined
+export const asp_IsUndefined = (obj) => {
+  return Object.prototype.toString.call(obj) === '[object Undefined]'
+}
+
+// 是否Symbol
+export const asp_IsSymbol = (obj) => {
+  return Object.prototype.toString.call(obj) === '[object Symbol]'
+}

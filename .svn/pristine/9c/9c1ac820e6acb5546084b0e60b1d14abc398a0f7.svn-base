@@ -1,0 +1,7 @@
+export default {
+  name: 'asp-time-picker',
+  functional: true,
+  render (h, self) {
+    return h('el-time-picker', self.data, self.children)
+  }
+}

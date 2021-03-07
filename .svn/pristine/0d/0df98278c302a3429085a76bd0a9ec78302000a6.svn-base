@@ -1,0 +1,8 @@
+import aspButtonGroup from './src/button-group.js'
+
+/* istanbul ignore next */
+aspButtonGroup.install = function (Vue) {
+  Vue.component(aspButtonGroup.name, aspButtonGroup)
+}
+
+export default aspButtonGroup

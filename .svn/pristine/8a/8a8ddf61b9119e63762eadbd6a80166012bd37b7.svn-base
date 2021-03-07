@@ -1,0 +1,233 @@
+<template>
+  <asp-select ref="select"
+              class="asp-tree-select"
+              v-model="selectData"
+              v-bind="selectAttributes"
+              :multiple="showCheckbox"
+              :filter-method="dataFilter"
+              collapse-tags
+              @visible-change="mouseleave"
+              @clear="cusclearable">
+    <asp-option :value="optionValue"
+                :label="optionLabel">
+      <asp-tree ref="selectTree"
+                :class="[getLeaf ? 'my-tree' : '']"
+                v-bind="treeAttributes"
+                :expand-on-click-node="false"
+                :check-strictly="getLeaf"
+                :node-key="props.value"
+                :show-checkbox="showCheckbox"
+                :render-content="defaultRender"
+                :filter-node-method="filterNode"
+                @check="handleCheck"
+                @node-click="handleNodeClick"
+                @init="init"></asp-tree>
+    </asp-option>
+  </asp-select>
+</template>
+
+<script>
+export default {
+  name: 'asp-tree-select',
+  props: {
+    selectAttributes: {
+      type: Object,
+      default: () => { }
+    },
+    treeAttributes: {
+      type: Object,
+      default: () => { }
+    },
+    props: {
+      type: Object,
+      default: () => {
+        return {
+          value: 'dictId', // ID字段名
+          label: 'title', // 显示名称
+          children: 'children' // 子级字段名
+        }
+      }
+    },
+    // 是否显示多选
+    showCheckbox: {
+      type: Boolean,
+      default: () => {
+        return true
+      }
+    },
+    // 是否只选子节点，单选可用
+    checkLeaf: {
+      type: Boolean,
+      default: false
+    },
+    // 是否只返回叶子节点，多选可用
+    getLeaf: {
+      type: Boolean,
+      default: false
+    },
+    defaultCheckedKeys: {
+      type: Array,
+      default: () => {
+        return []
+      }
+    },
+    defaultKeysType: {
+      type: String,
+      default: ''
+    },
+    thisRender: {
+      type: Function
+    },
+    clickDisable: {
+      type: Function
+    }
+  },
+  data () {
+    return {
+      filterText: '',
+      optionValue: '',
+      optionLabel: '',
+      // 选择器值
+      selectData: [],
+      // 下拉树选择的数据
+      checkData: [],
+      // 是否显示清空图标
+      hasData: false,
+      // 是否是父级传过来的值
+      flag: true
+    }
+  },
+  watch: {
+    defaultCheckedKeys (val) {
+      this.init(val)
+    },
+    // 监听实时改变文本框的值
+    checkData (val) {
+      if (this.showCheckbox) {
+        this.$nextTick(() => {
+          this.$refs.selectTree.setCheckedNodes(this.checkData)
+          this.$emit('input', this.$refs.selectTree.getCheckedKeys())
+          this.optionValue = this.checkData.length ? this.checkData[0][this.props.value] : ''
+          this.optionLabel = this.checkData.length ? this.checkData[0][this.props.label] : ''
+          this.selectData = this.$refs.selectTree.getCheckedKeys() || []
+        })
+      } else {
+        this.$refs.select.blur()
+        this.$emit('input', '')
+        if (this.flag && this.checkData) {
+          this.$emit('input', this.$refs.selectTree.getCurrentKey())
+        }
+      }
+    }
+  },
+  methods: {
+    handleCheck (data, data2) {
+      this.checkData = data2.checkedNodes
+      const maxLength = data2.checkedKeys.length
+      if (this.multipleLimit !== 0 && maxLength > this.multipleLimit && this.getLeaf) {
+        this.$message({
+          message: `选中数不能超过${this.multipleLimit} !`,
+          type: 'warning'
+        })
+        // 这样写是为了能够找到并删除最后一次勾选的目标节点并删除
+        this.checkData.splice(data2.checkedKeys.indexOf(data[this.props.value]), 1)
+      }
+      this.$emit('input', data)
+      this.$emit('check', this.$refs.selectTree.getCheckedNodes(this.getLeaf))
+    },
+    handleNodeClick (data, data1, data2) {
+      if (typeof this.clickDisable === 'function') {
+        const res = this.clickDisable(data, data1, data2)
+        if (res) {
+          return
+        }
+      }
+      if (!this.showCheckbox) {
+        if (this.checkLeaf) {
+          if (data1.isLeaf) {
+            this.flag = true
+            this.checkData = ''
+            this.checkData = data[this.props.label]
+            this.selectData = data[this.props.label]
+          }
+        } else {
+          this.flag = true
+          this.checkData = ''
+          this.checkData = data[this.props.label]
+          this.selectData = data[this.props.label]
+        }
+      }
+      this.$emit('node-click', data, data1, data2)
+    },
+    dataFilter (val) {
+      this.$refs.selectTree.filter(val)
+    },
+    filterNode (value, data) {
+      if (!value) return true
+      return data[this.props.label].indexOf(value) !== -1
+    },
+    // 默认传值方法
+    init (code, label) {
+      if (this.showCheckbox && this.defaultKeysType !== 'lazy') {
+        // this.$refs.selectTree.setCheckedKeys(code)
+        this.checkData = code
+      } else if (this.defaultKeysType === 'lazy') {
+        this.$refs.selectTree.setCurrentKey(code[1])
+        this.checkData = code[0]
+      } else {
+        this.checkData = label
+        this.$emit('input', code)
+        this.$emit('getInput', code)
+      }
+    },
+    reset () {
+      this.optionValue = ''
+      if (this.showCheckbox) {
+        this.checkData = []
+        this.hasData = false
+        this.$refs.selectTree.setCheckedNodes(this.checkData)
+      } else {
+        this.checkData = ''
+      }
+    },
+    // 下拉是否展开，对应显示清空
+    mouseleave (e) {
+      if (e) {
+        // 懒加载展开滚动条默认到底部问题修复
+        const arr = document.getElementsByClassName('el-select-dropdown__wrap')
+        arr.forEach(item => {
+          setTimeout(function () { item.scrollTop = 0 }, 0)
+        })
+      } else {
+        this.$refs.selectTree.filter('')
+      }
+      if (this.valueTitle) {
+        this.hasData = true
+      } else {
+        this.hasData = false
+      }
+    },
+    // 移除某个节点
+    remove (data) {
+      this.$refs.selectTree.remove(data)
+    },
+    // 默认渲染
+    defaultRender (h, { node, data, store }) {
+      if (typeof this.thisRender === 'function') {
+        return this.thisRender(h, { node, data, store })
+      } else {
+        return (
+          <span class="el-tree-node__label" >{node.label}</span>
+        )
+      }
+    },
+    // 默认清空的事件
+    cusclearable () {
+      this.$emit('cusclearable')
+    }
+  },
+  mounted () {
+    this.init(this.defaultCheckedKeys)
+  }
+}
+</script>

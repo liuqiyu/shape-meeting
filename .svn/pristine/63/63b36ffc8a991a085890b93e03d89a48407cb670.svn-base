@@ -1,0 +1,119 @@
+<template>
+  <div class="asp-research-problemlist"
+       :class="'is_' + position">
+       <el-collapse v-model="activeNames">
+        <el-collapse-item :name="'1'">
+          <template slot="title">
+            <span class="title"
+                  :style="{
+                'color': 'rgb(48,49,51,1)',
+                'font-size': '15px'
+              }">
+              <i class="el-icon-tickets"
+                 style="margin-right: 5px"></i>{{ item.collapseTitle }}
+            </span>
+            <el-button
+              size="10px"
+              :type="'primary'"
+              :style="{float: 'center', margin:'0 4px'}"
+              class="solid-with-icon-btn"
+              @click.stop="add">{{ item.addButtonLabel }}</el-button>
+          </template>
+          <!-- 创建调研问题控件 -->
+          <AspResearchEditProblem
+            v-for="(problemItem, index) in model[item.problemListColumnName]"
+            :key="index"
+            :index="index"
+            :item="item"
+            :problemItem="problemItem"
+            :computeOptionList="computeOptionList"
+            :dataList="model[item.problemListColumnName]"
+            @remove="remove"></AspResearchEditProblem>
+        </el-collapse-item>
+      </el-collapse>
+  </div>
+</template>
+
+<script>
+import AspResearchEditProblem from '../../asp-research-editproblem'
+export default {
+  name: 'asp-research-problemlist',
+  components: { AspResearchEditProblem },
+  props: {
+    computeOptionList: {
+      type: Array,
+      default: () => [
+        {
+          label: '多选',
+          value: '1'
+        },
+        {
+          label: '单选',
+          value: '2'
+        },
+        {
+          label: '布尔值(是/否)',
+          value: '3'
+        },
+        {
+          label: '开放式',
+          value: '4'
+        }
+      ]
+    },
+    item: {
+      type: Object,
+      default: () => { }
+    },
+    model: {
+      type: Object,
+      default: () => { }
+    },
+    position: {
+      type: String,
+      default: () => 'left'
+    }
+  },
+  data () {
+    return {
+      activeNames: ['1']
+    }
+  },
+  watch: {
+    model: {
+      handler (value, oldValue) {
+        const data = value[this.item.problemListColumnName] || []
+        if (data.length === 0) {
+          this.add()
+        }
+      },
+      immediate: true,
+      deep: true
+    }
+  },
+  mounted () {},
+  methods: {
+    // 点击新增子组件
+    add () {
+      const addObj = { showProduct: false }
+      addObj[this.item.problemDescColumnName] = ''
+      addObj[this.item.problemExtColumnName] = ''
+      addObj[this.item.replyTypeColumnName] = ''
+      addObj[this.item.multiSelectColumnName] = []
+      if (this.item.multiSelectColumnName !== this.item.singleSelectColumnName) {
+        addObj[this.item.singleSelectColumnName] = []
+      }
+      this.model[this.item.problemListColumnName].push(addObj)
+      console.log('model=====', this.model)
+    },
+    // 删除子组件
+    remove (n) {
+      if (this.model[this.item.problemListColumnName].length === 1) {
+        this.$message.warning('至少需添加一个调研问题！')
+      } else {
+        this.model[this.item.problemListColumnName].splice(n, 1)
+      }
+    }
+  }
+}
+</script>

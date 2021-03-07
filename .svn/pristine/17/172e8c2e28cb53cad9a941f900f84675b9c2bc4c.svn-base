@@ -1,0 +1,8 @@
+import aspRadio from './src/radio.js'
+
+/* istanbul ignore next */
+aspRadio.install = function (Vue) {
+  Vue.component(aspRadio.name, aspRadio)
+}
+
+export default aspRadio

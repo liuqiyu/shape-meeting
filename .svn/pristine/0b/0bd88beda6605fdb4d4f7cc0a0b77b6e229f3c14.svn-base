@@ -1,0 +1,8 @@
+import aspCol from './src/col.js'
+
+/* istanbul ignore next */
+aspCol.install = function (Vue) {
+  Vue.component(aspCol.name, aspCol)
+}
+
+export default aspCol

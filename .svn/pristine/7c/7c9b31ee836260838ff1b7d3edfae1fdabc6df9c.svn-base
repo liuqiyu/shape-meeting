@@ -1,0 +1,8 @@
+import aspBadge from './src/badge.js'
+
+/* istanbul ignore next */
+aspBadge.install = function (Vue) {
+  Vue.component(aspBadge.name, aspBadge)
+}
+
+export default aspBadge

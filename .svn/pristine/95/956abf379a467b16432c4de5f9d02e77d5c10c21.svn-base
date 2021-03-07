@@ -1,0 +1,159 @@
+<template>
+  <el-select class="asp-radio-group-select"
+             v-bind="attributes"
+             :multiple="false"
+             :popper-class="popperClass + ' query-form-selector query-form-selector-radio'"
+             :popperAppendToBody="false"
+             :style="{width: width || null}"
+             v-model="selectRadioValue"
+             @visible-change='visibleChange'>
+    <el-option label="隐藏"
+               style="display:none"
+               value='0'>
+    </el-option>
+    <el-radio-group v-for="(item,index) in radioGroups"
+                    :key="index"
+                    v-model="item.radioValue"
+                    @change="radioChange">
+      <div class="title selector-item"
+           v-if="item.title">{{item.title}}</div>
+      <div v-for='(cell,index) in item.options'
+           class="selector-item"
+           :key='cell.label+index'
+           @click.stop>
+        <el-radio :label="cell.value">{{cell.label}}</el-radio>
+        <div v-if="cell.showInput">
+          <template v-if="item.type === undefined || item.type === 'default'">
+            <div>{{cell.inputLeftText || ''}}</div>
+            <div class="selector"
+                 v-if='cell.selectOptions'>
+              <i class="el-icon-arrow-down"></i>
+              <select ref="select"
+                      v-model="cell.selectValue"
+                      @change="selectChange">
+                <option v-for="item in cell.selectOptions"
+                        :key="item.value"
+                        :value="item.value">{{item.label}}</option>
+              </select>
+            </div>
+            <el-input v-model="cell.inputValue"
+                      :type="cell.type"
+                      @input="inputChange"
+                      placeholder="请输入"></el-input>
+            <div>{{cell.inputRightText || ''}}</div>
+          </template>
+          <template v-if="item.type==='second'">
+            <el-input v-model="cell.inputLeftValue"
+                      @input="inputChange"
+                      :type="cell.type"
+                      placeholder="请输入"></el-input>
+            <div class="selector"
+                 v-if='cell.selectLeftOptions'>
+              <i class="el-icon-arrow-down"></i>
+              <select ref="select"
+                      v-model="cell.selectLeftValue"
+                      @change="selectChange">
+                <option v-for="item in cell.selectLeftOptions"
+                        :key="item.value"
+                        :value="item.value">{{item.label}}</option>
+              </select>
+            </div>
+            <div>{{item.inputLeftText || ''}}</div>
+            <div class="selector"
+                 v-if='cell.selectRightOptions'>
+              <i class="el-icon-arrow-down"></i>
+              <select ref="select"
+                      v-model="cell.selectRightValue"
+                      @change="selectChange">
+                <option v-for="item in cell.selectRightOptions"
+                        :key="item.value"
+                        :value="item.value">{{item.label}}</option>
+              </select>
+            </div>
+            <el-input v-model="cell.inputRightValue"
+                      @input="inputChange"
+                      :type="cell.type"
+                      placeholder="请输入"></el-input>
+            <div>{{cell.inputRightText || ''}}</div>
+          </template>
+        </div>
+      </div>
+    </el-radio-group>
+  </el-select>
+</template>
+
+<script>
+export default {
+  name: 'asp-radio-group-select',
+  props: {
+    attributes: {
+      type: Object,
+      default: () => { }
+    },
+    radioGroups: {
+      type: Array,
+      default: () => []
+    },
+    popperClass: {
+      type: String,
+      default: ''
+    },
+    width: {
+      type: String,
+      default: ''
+    },
+    type: {
+      type: String,
+      default: 'default'
+    }
+  },
+  data () {
+    return {
+      selectRadioValue: ''
+    }
+  },
+  methods: {
+    initSelectRadioValue () {
+      this.selectRadioValue = ''
+      this.radioGroups.forEach((item, index) => {
+        const radioItem = this.radioGroups[index].options.find(subItem => subItem.value === item.radioValue)
+        let label = ''
+        if (radioItem.showInput) {
+          if (radioItem.inputValue === '' || (radioItem.inputLeftValue === '' && radioItem.inputRightValue === '')) {
+            label = radioItem.label
+          } else {
+            if (item.type === 'second') {
+              const LeftLabel = radioItem.inputLeftValue ? radioItem.inputLeftValue + radioItem.selectLeftOptions.find(item => item.value === radioItem.selectLeftValue).label : ''
+              const rightLabel = radioItem.inputRightValue ? radioItem.selectRightOptions.find(item => item.value === radioItem.selectRightValue).label + radioItem.inputRightValue : ''
+              label = LeftLabel + item.inputLeftText + rightLabel
+            } else {
+              label = radioItem.selectOptions.find(item => item.value === radioItem.selectValue).label + radioItem.inputValue
+            }
+          }
+        } else {
+          label = radioItem.label
+        }
+        this.selectRadioValue += (label + (index === this.radioGroups.length - 1 ? '' : '；'))
+      })
+    },
+    visibleChange (e) {
+      this.$emit('visibleChange', e)
+    },
+    radioChange (value) {
+      this.initSelectRadioValue()
+      this.$emit('radioChange', value)
+    },
+    selectChange (value) {
+      this.initSelectRadioValue()
+      this.$emit('radioChange', value)
+    },
+    inputChange (value) {
+      this.initSelectRadioValue()
+      this.$emit('radioChange', value)
+    }
+  },
+  mounted () {
+    this.initSelectRadioValue()
+  }
+}
+</script>

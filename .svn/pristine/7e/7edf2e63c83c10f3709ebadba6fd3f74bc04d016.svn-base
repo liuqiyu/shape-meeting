@@ -1,0 +1,8 @@
+import aspInputNumber from './src/input-number.js'
+
+/* istanbul ignore next */
+aspInputNumber.install = function (Vue) {
+  Vue.component(aspInputNumber.name, aspInputNumber)
+}
+
+export default aspInputNumber

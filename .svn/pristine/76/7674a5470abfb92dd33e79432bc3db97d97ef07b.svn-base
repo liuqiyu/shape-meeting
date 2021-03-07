@@ -1,0 +1,8 @@
+import aspFooter from './src/footer.js'
+
+/* istanbul ignore next */
+aspFooter.install = function (Vue) {
+  Vue.component(aspFooter.name, aspFooter)
+}
+
+export default aspFooter

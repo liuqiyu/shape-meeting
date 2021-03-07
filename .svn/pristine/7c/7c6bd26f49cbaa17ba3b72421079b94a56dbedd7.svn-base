@@ -1,0 +1,8 @@
+import aspSlider from './src/slider.js'
+
+/* istanbul ignore next */
+aspSlider.install = function (Vue) {
+  Vue.component(aspSlider.name, aspSlider)
+}
+
+export default aspSlider

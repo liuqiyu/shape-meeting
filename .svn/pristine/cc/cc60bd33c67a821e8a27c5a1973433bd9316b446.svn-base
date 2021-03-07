@@ -1,0 +1,7 @@
+export default {
+  name: 'asp-menu-item',
+  functional: true,
+  render (h, self) {
+    return h('el-menu-item', self.data, self.children)
+  }
+}

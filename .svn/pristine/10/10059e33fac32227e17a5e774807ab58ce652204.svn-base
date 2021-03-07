@@ -1,0 +1,7 @@
+export default {
+  name: 'asp-collapse-item',
+  functional: true,
+  render (h, self) {
+    return h('el-collapse-item', self.data, self.children)
+  }
+}

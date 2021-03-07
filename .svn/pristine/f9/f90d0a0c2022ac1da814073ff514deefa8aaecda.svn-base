@@ -1,0 +1,8 @@
+import aspCheckboxGroup from './src/checkbox-group.js'
+
+/* istanbul ignore next */
+aspCheckboxGroup.install = function (Vue) {
+  Vue.component(aspCheckboxGroup.name, aspCheckboxGroup)
+}
+
+export default aspCheckboxGroup

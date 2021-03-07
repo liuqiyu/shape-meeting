@@ -1,0 +1,7 @@
+export default {
+  name: 'asp-badge',
+  functional: true,
+  render (h, self) {
+    return h('el-badge', self.data, self.children)
+  }
+}

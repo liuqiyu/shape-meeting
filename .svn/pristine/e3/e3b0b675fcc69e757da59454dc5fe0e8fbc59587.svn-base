@@ -1,0 +1,8 @@
+import aspRadioGroupdSelect from './src/main'
+
+/* istanbul ignore next */
+aspRadioGroupdSelect.install = function (Vue) {
+  Vue.component(aspRadioGroupdSelect.name, aspRadioGroupdSelect)
+}
+
+export default aspRadioGroupdSelect

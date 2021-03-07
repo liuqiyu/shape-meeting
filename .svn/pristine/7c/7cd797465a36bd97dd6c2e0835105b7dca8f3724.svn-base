@@ -1,0 +1,7 @@
+export default {
+  name: 'asp-select',
+  functional: true,
+  render (h, self) {
+    return h('el-select', self.data, self.children)
+  }
+}

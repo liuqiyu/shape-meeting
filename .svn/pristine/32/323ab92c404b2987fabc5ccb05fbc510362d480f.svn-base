@@ -1,0 +1,25 @@
+const CryptoJS = require('crypto-js') // 引用AES源码js
+
+// 解密方法
+export const asp_Decrypt = (dataValue, keyValue) => {
+  const keyStr = CryptoJS.enc.Utf8.parse(keyValue)
+  const decrypt = CryptoJS.AES.decrypt(dataValue, keyStr, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 })
+  return CryptoJS.enc.Utf8.stringify(decrypt).toString()
+}
+
+// 加密方法
+export const asp_Encrypt = (dataValue, keyValue) => {
+  if (dataValue.constructor === Object || dataValue.constructor === Array) {
+    dataValue = JSON.stringify(dataValue)
+  }
+  const key = CryptoJS.enc.Utf8.parse(keyValue)
+  const srcs = CryptoJS.enc.Utf8.parse(dataValue)
+  let encrypted = CryptoJS.AES.encrypt(srcs, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 })
+  encrypted = encrypted.toString()
+  return encrypted
+}
+
+export default {
+  asp_Decrypt,
+  asp_Encrypt
+}

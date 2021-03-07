@@ -1,0 +1,6 @@
+import { MenuItemGroup } from 'element-ui'
+
+export default {
+  name: 'asp-menu-item-group',
+  extends: MenuItemGroup
+}

@@ -1,0 +1,8 @@
+{
+  "button-list": "./src/components/advanced/button-list/index.js",
+  "elements": "./src/components/element/index.js",
+  "asp-research-problemlist": "./src/components/advanced/asp-research-problemlist/index.js",
+  "asp-research-problemdetaillist": "./src/components/advanced/asp-research-problemdetaillist/index.js",
+  "asp-research-replylist": "./src/components/advanced/asp-research-replylist/index.js",
+  "asp-research-replydetaillist": "./src/components/advanced/asp-research-replydetaillist/index.js"
+}

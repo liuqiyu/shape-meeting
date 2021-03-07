@@ -1,0 +1,8 @@
+import aspPageHeader from './src/pageHeader.js'
+
+/* istanbul ignore next */
+aspPageHeader.install = function (Vue) {
+  Vue.component(aspPageHeader.name, aspPageHeader)
+}
+
+export default aspPageHeader

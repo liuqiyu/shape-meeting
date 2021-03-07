@@ -1,0 +1,8 @@
+import aspRate from './src/rate.js'
+
+/* istanbul ignore next */
+aspRate.install = function (Vue) {
+  Vue.component(aspRate.name, aspRate)
+}
+
+export default aspRate

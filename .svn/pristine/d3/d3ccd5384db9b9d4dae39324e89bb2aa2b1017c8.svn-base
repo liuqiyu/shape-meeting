@@ -1,0 +1,18 @@
+export default {
+  name: 'render',
+  props: {
+    col: {
+      type: Object,
+      default: () => { }
+    },
+    row: {
+      type: Object,
+      default: () => { }
+    }
+  },
+  render (h) {
+    if (typeof this.col.render === 'function') {
+      return this.col.render(h, this.col, this.row)
+    }
+  }
+}

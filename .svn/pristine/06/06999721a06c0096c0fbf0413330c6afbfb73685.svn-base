@@ -1,0 +1,115 @@
+<template>
+  <div class="asp-research-reply"
+       :class="'is_' + position">
+    <el-form
+      ref="replyForm"
+      class="asp-smart-form__research"
+      :model="problemItem"
+      :label-width="'0px'">
+      <el-form-item v-if="replyType === '单选'" label="" :prop="problemItem.problemReplyValue">
+        <el-radio-group v-model="problemTableData[problemItem.problemReplyValue]">
+          <el-radio v-for="(replyWayItem, replyWayIndex) in problemTableData[problemItem.problemReplyOption]"
+                    :label="replyWayItem.code"
+                    :value="replyWayItem.code"
+                    :key="replyWayIndex">{{ replyWayItem.name }}</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item v-else-if="replyType === '多选'" label="" :prop="problemItem.problemReplyValue">
+        <el-checkbox-group v-model="problemTableData[problemItem.problemReplyValue]">
+          <el-checkbox v-for="(cell, index) in problemTableData[problemItem.problemReplyOption]"
+                       :value="cell['code']"
+                       :label="cell['code']"
+                       :key="index">{{cell['name']}}</el-checkbox>
+        </el-checkbox-group>
+      </el-form-item>
+      <el-form-item v-else-if="replyType === '布尔值'" label="" :prop="problemItem.problemReplyValue">
+        <el-radio-group v-model="problemTableData[problemItem.problemReplyValue]">
+          <el-radio v-for="(replyWayItem, replyWayIndex) in problemTableData[problemItem.problemReplyOption]"
+                    :label="replyWayItem.code"
+                    :value="replyWayItem.code"
+                    :key="replyWayIndex">{{ replyWayItem.name }}</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item v-else label="" :prop="problemItem.problemReplyValue">
+        <el-input
+          v-model="problemTableData[problemItem.problemReplyValue]"
+          maxlength="500"
+          placeholder="最多可录入500个字符"
+          type="textarea"
+          rows="3"
+          show-word-limit
+        ></el-input>
+      </el-form-item>
+    </el-form>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'asp-research-reply',
+  computed: {
+    getActiveNames () {
+      return this.collapseGroup.map((item, index) => {
+        return index
+      })
+    }
+  },
+  props: {
+    problemItem: {
+      type: Object,
+      default: () => {}
+    },
+    model: {
+      type: Object,
+      default: () => {}
+    },
+    problemTableData: {
+      type: Object,
+      default: () => {}
+    },
+    position: {
+      type: String,
+      default: () => 'left'
+    }
+  },
+  data () {
+    return {
+      activeNames1: ['1'],
+      collapseGroup: this.model.collapseGroup,
+      showProduct: false,
+      showType: {},
+      replyWayOptionList: [
+        {
+          label: '多选',
+          value: '1'
+        },
+        {
+          label: '单选',
+          value: '2'
+        },
+        {
+          label: '布尔值(是/否)',
+          value: '3'
+        },
+        {
+          label: '开放式',
+          value: '4'
+        }
+      ],
+      replyType: this.problemTableData[this.problemItem.problemTypeDescName]
+    }
+  },
+  created () {
+    let bb = []
+    let aa = "[{id: '111', name: 'haha'}, {id: '222', name: 'pppp'}]"
+    bb = this.asp_stringToObject(aa)
+    console.log(bb)
+  },
+  methods: {
+    asp_stringToObject (fn) {
+      const Fn = Function // 一个变量指向Function，防止有些前端编译工具报错
+      return new Fn('return ' + fn)()
+    }
+  }
+}
+</script>

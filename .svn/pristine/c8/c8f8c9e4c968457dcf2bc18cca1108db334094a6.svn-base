@@ -1,0 +1,7 @@
+export default {
+  name: 'asp-dialog',
+  functional: true,
+  render (h, self) {
+    return h('el-dialog', self.data, self.children)
+  }
+}

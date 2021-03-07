@@ -1,0 +1,7 @@
+export default {
+  name: 'asp-rate',
+  functional: true,
+  render (h, self) {
+    return h('el-rate', self.data, self.children)
+  }
+}

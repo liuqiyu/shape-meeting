@@ -1,0 +1,8 @@
+import aspLoading from './src/loading.js'
+
+/* istanbul ignore next */
+aspLoading.install = function (Vue) {
+  Vue.component(aspLoading.name, aspLoading)
+}
+
+export default aspLoading

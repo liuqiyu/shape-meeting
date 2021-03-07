@@ -1,0 +1,8 @@
+import aspTreeSelect from './src/main'
+
+/* istanbul ignore next */
+aspTreeSelect.install = function (Vue) {
+  Vue.component(aspTreeSelect.name, aspTreeSelect)
+}
+
+export default aspTreeSelect

@@ -1,0 +1,120 @@
+<template>
+  <asp-upload ref="upload"
+              v-bind="attributes"
+              :http-request="handleBeforeUpload">
+    <i class="el-icon-upload"></i>
+    <div class="el-upload__text">
+      将文件拖到此处，或
+      <em>点击上传</em>
+    </div>
+    <div class="el-upload__tip"
+         slot="tip">{{tip}}</div>
+  </asp-upload>
+</template>
+
+<script>
+export default {
+  name: 'asp-upload-file',
+  props: {
+    attributes: {
+      type: Object,
+      default: () => { return { action: '', drag: true } }
+    },
+    uploadType: {
+      type: String
+    },
+    tip: {
+      type: String,
+      default: '建议上传文件不超过2M'
+    },
+    uploadUrl: {
+      type: String
+    }
+  },
+  methods: {
+    async handleBeforeUpload (params) {
+      const file = params.file
+      const formData = new FormData()
+      if (this.uploadType === 'excel') {
+        const type = file.name.slice(file.name.lastIndexOf('.') + 1).toLowerCase()
+        if (type === 'xlsx') {
+          formData.append('files', file)
+          const res = await this.$http.sendRequest({
+            method: 'POST',
+            url: this.uploadUrl || '/v1/scada/uploadExcel',
+            data: formData
+          })
+          if (res) {
+            this.$emit('input', res, 'excel')
+            this.$message({
+              message: '上传成功',
+              type: 'success'
+            })
+          } else {
+            this.$message({
+              message: '上传失败!',
+              type: 'error'
+            })
+          }
+        } else {
+          this.$refs.upload.clearFiles()
+          this.$message({
+            message: '请上传Excel文件 !',
+            type: 'error'
+          })
+        }
+      } else if (this.uploadType === 'image/png') {
+        const type = file.name.slice(file.name.lastIndexOf('.') + 1).toLowerCase()
+        if (type === 'png' || type === 'jpg' || type === 'gif' || type === 'svg' || type === 'bmp') {
+          formData.append('files', file)
+          const res = await this.$http.sendRequest({
+            method: 'POST',
+            url: this.uploadUrl || '/v1/scada/uploadPictureForScadaCanvas',
+            data: formData
+          })
+          if (res) {
+            res.staticImageUpload = true
+            this.$emit('input', res)
+            this.$message({
+              message: '上传成功',
+              type: 'success'
+            })
+          } else {
+            this.$message({
+              message: '上传失败!',
+              type: 'error'
+            })
+          }
+        } else {
+          this.$refs.upload.clearFiles()
+          this.$message({
+            message: '请上传png,jpg,gif,svg,bpm格式的图片 !',
+            type: 'error'
+          })
+        }
+      } else {
+        formData.append('files', file)
+        const res = await this.$http.sendRequest({
+          method: 'POST',
+          url: this.uploadUrl || '/v1/scada/upload',
+          data: formData
+        })
+        if (res.code === 200) {
+          this.$emit('input', res.data)
+          this.$message({
+            message: '上传成功',
+            type: 'success'
+          })
+        } else {
+          this.$message({
+            message: res.msg,
+            type: 'error'
+          })
+        }
+      }
+      return false
+    }
+  },
+  mounted () { }
+}
+</script>

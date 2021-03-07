@@ -1,0 +1,57 @@
+<template>
+  <div>
+    <div class="asp-dialog__body">
+      <p>11111</p>
+      <p>11111</p>
+      <p>11111</p>
+      <p>11111</p>
+      <p>11111</p>
+      <p>11111</p>
+      <p>11111</p>
+      <p>11111</p>
+      <p>11111</p>
+      <p>11111</p>
+      <p>11111</p>
+      <p>11111</p>
+      <p>11111</p>
+      <p>11111</p>
+      <p>11111</p>
+      <p>11111</p>
+      <p>11111</p>
+      <p>11111</p>
+      <p>11111</p>
+      <p>11111</p>
+      <p>11111</p>
+      <p>11111</p>
+    </div>
+    <div class="asp-dialog__footer">
+      <el-button @click="cancel"
+                 class="tem-search">取消</el-button>
+      <el-button type="primary"
+                 @click="submitConfirm()"
+                 class="tem-search">确 定</el-button>
+    </div>
+
+  </div>
+
+</template>
+
+<script>
+export default {
+  name: 'add',
+  props: ['dialogData'],
+  data () {
+    return {
+    }
+  },
+  methods: {
+    // 取消
+    cancel () {
+      this.$emit('close', false)
+    }
+  }
+}
+</script>
+
+<style scoped lang="scss">
+</style>

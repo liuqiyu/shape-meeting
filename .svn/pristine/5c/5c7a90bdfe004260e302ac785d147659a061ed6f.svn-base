@@ -1,0 +1,8 @@
+import aspTabPane from './src/tab-pane.js'
+
+/* istanbul ignore next */
+aspTabPane.install = function (Vue) {
+  Vue.component(aspTabPane.name, aspTabPane)
+}
+
+export default aspTabPane

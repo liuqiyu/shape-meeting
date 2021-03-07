@@ -1,0 +1,8 @@
+import aspForm from './src/form.js'
+
+/* istanbul ignore next */
+aspForm.install = function (Vue) {
+  Vue.component(aspForm.name, aspForm)
+}
+
+export default aspForm

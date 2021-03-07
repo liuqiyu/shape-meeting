@@ -1,0 +1,7 @@
+export default {
+  name: 'asp-transfer',
+  functional: true,
+  render (h, self) {
+    return h('el-transfer', self.data, self.children)
+  }
+}

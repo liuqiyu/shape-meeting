@@ -1,0 +1,7 @@
+export default {
+  name: 'asp-input-number',
+  functional: true,
+  render (h, self) {
+    return h('el-input-number', self.data, self.children)
+  }
+}

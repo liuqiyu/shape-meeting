@@ -1,0 +1,22 @@
+# 常见问题以及解决方案汇总
+
+## vue-cli3可以通过node-modules使用组件，但是无法静态引用。
+
+```
+cnpm install --save-dev @babel/plugin-transform-modules-umd
+
+// babel.config.js
+module.exports = {
+    presets: [
+        [
+            "@vue/app",
+            {
+                useBuiltIns: "usage"
+            }
+        ]
+    ],
+    // here
+    plugins: ["@babel/plugin-transform-modules-umd"]
+}
+```
+按照上述操作，就可以使用了。

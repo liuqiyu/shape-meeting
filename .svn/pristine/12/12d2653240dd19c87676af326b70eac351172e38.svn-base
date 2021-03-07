@@ -1,0 +1,7 @@
+export default {
+  name: 'asp-carousel-item',
+  functional: true,
+  render (h, self) {
+    return h('el-carousel-item', self.data, self.children)
+  }
+}

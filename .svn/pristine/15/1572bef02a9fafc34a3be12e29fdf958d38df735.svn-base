@@ -1,0 +1,8 @@
+import aspSteps from './src/steps.js'
+
+/* istanbul ignore next */
+aspSteps.install = function (Vue) {
+  Vue.component(aspSteps.name, aspSteps)
+}
+
+export default aspSteps

@@ -1,0 +1,8 @@
+import aspOptionGroup from './src/option-group.js'
+
+/* istanbul ignore next */
+aspOptionGroup.install = function (Vue) {
+  Vue.component(aspOptionGroup.name, aspOptionGroup)
+}
+
+export default aspOptionGroup

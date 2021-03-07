@@ -1,0 +1,62 @@
+export default {
+  name: 'asp-smart-dialog',
+  functional: true,
+  render (h, self) {
+    self.props.width = self.props.width || '360px'
+    if (typeof self.props.width === 'number') {
+      if (self.props.width > 1) {
+        const width = self.props.width * 212 + (self.props.width - 1) * 8 + 48
+        self.props.width = `${width > 1200 ? 1200 : width}px`
+      } else {
+        self.props.width = '360px'
+      }
+    }
+
+    // self.props.hasOwnProperty('view')
+    if (Object.prototype.hasOwnProperty.call(self.props, 'view')) {
+      self.props.customClass = 'asp-smart-dialog-dynamic'
+    }
+    // !self.props.hasOwnProperty('close-on-click-modal')
+    if (!Object.prototype.hasOwnProperty.call(self.props, 'close-on-click-modal')) {
+      self.props.closeOnClickModal = false
+    }
+    // !self.props.hasOwnProperty('close-on-press-escape')
+    if (!Object.prototype.hasOwnProperty.call(self.props, 'close-on-press-escape')) {
+      self.props.closeOnPressEscape = false
+    }
+    // const directives = self.data.directives || []
+    // self.data.directives = [...directives, { name: 'drag' }, { name: 'next' }]
+    self.props.appendToBody = true
+    const onClose = self.listeners.close
+    const $on = {
+      close: () => {
+        // 关闭时发送事件：解绑动态组件，解决再次打开时数据缓存的问题
+        if (self.listeners['update:view']) {
+          self.listeners['update:view'](null)
+        }
+        if (onClose) {
+          onClose()
+        }
+      }
+    }
+    self.data.on = { ...self.data.on, ...self.listeners, ...$on }
+    self.data.attrs = { ...self.data.attrs, ...self.props }
+    return h(
+      'el-dialog',
+      self.data,
+      self.children && self.children.map(t => {
+        if (t.data && t.data.attrs) {
+          t.data.attrs = { ...t.data.attrs, ...(t.componentOptions && t.componentOptions.propsData) }
+        }
+        if (t.data && t.data.on === undefined) {
+          t.data.on = t.data.on || (t.componentOptions && t.componentOptions.listeners)
+        }
+        return h(
+          (t.componentOptions && t.componentOptions.tag) || t.tag,
+          t.data,
+          t.children || (t.componentOptions && t.componentOptions.children)
+        )
+      })
+    )
+  }
+}

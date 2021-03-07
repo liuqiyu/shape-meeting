@@ -1,0 +1,8 @@
+import aspDatePicker from './src/date-picker.js'
+
+/* istanbul ignore next */
+aspDatePicker.install = function (Vue) {
+  Vue.component(aspDatePicker.name, aspDatePicker)
+}
+
+export default aspDatePicker

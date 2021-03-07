@@ -1,0 +1,43 @@
+// 表格样式
+.asp-table {
+    .el-table--border {
+      border: 1px solid #EBEEF5;
+    }
+    
+    .el-table--border td:first-child .cell,
+    .el-table--border th:first-child .cell {
+      padding-left: 0;
+    }
+
+    .cell {
+      padding: 0; // 去掉element-ui自带的值
+    }
+
+    td {
+      padding: 3px;
+      box-sizing: border-box; // 统一各浏览器盒模型的计算
+    }
+
+    .cell.el-tooltip {
+      min-width: 30px;
+    }
+
+    th {
+      border-right: 1px solid rgba(195, 213, 255, 0.5);
+      color: rgba(83, 96, 126, 1);
+      background-color: #F9FBFF;
+      font-size: 14px;
+      padding: 0px 3px 0px 3px; // 去掉element-ui自带的值
+
+      .cell {
+        display: flex;
+        align-items: center;
+        height: 37px;
+        line-height: 37px;
+      }
+    }
+
+    .padding-left-10 {
+        padding-left: 10px;
+    }
+}

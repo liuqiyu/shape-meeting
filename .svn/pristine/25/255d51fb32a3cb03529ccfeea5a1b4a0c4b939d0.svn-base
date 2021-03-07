@@ -1,0 +1,8 @@
+import aspDropdownMenu from './src/dropdown-menu.js'
+
+/* istanbul ignore next */
+aspDropdownMenu.install = function (Vue) {
+  Vue.component(aspDropdownMenu.name, aspDropdownMenu)
+}
+
+export default aspDropdownMenu

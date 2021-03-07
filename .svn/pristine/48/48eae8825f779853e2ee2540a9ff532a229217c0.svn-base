@@ -1,0 +1,8 @@
+import aspCheckbox from './src/checkbox.js'
+
+/* istanbul ignore next */
+aspCheckbox.install = function (Vue) {
+  Vue.component(aspCheckbox.name, aspCheckbox)
+}
+
+export default aspCheckbox

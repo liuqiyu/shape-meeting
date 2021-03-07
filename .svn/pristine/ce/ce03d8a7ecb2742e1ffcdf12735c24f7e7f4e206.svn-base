@@ -1,0 +1,252 @@
+<template>
+  <div class="asp-smart-form__research padding-row">
+    <aspAddproblemList :item="item" :model="model"></aspAddproblemList>
+    <!-- <aspProblemDetailList :problemItem="item" :model="model"></aspProblemDetailList> -->
+    <!-- <aspResearchReplyDetail :model="model" :problemItem="item"></aspResearchReplyDetail> -->
+    <!-- <aspResearchReplyList :model="model" :item="item"></aspResearchReplyList> -->
+  </div>
+</template>
+
+<script>
+import aspAddproblemList from '../../components/advanced/asp-research-problemlist'
+// import aspProblemDetailList from '../../components/advanced/asp-research-problemdetaillist'
+// import aspResearchReplyDetail from '../../components/advanced/asp-research-replydetail'
+// import aspResearchReplyList from '../../components/advanced/asp-research-replylist'
+export default {
+  name: 'AddProblemList',
+  components: {
+    aspAddproblemList // 创建问题
+    // aspProblemDetailList // 创建问题详情
+    // aspResearchReplyDetail // 问题回复详情
+    // aspResearchReplyList // 问题回复
+  },
+  data () {
+    return {
+      item: { // smartlayout界面配置选项
+        collapseTitle: '调研问题', // 折叠面板标题
+        addButtonLabel: '继续添加问题', // 新增按钮标题
+        delButtonLabel: '删除当前问题', // 删除按钮标题
+        problemListColumnName: 'questionList', // 问题列表字段标识
+        problemDescLabel: '问题描述', // 问题描述标题
+        problemDescColumnName: 'questionDesc', // 问题描述字段标识
+        problemDescLengthSwitch: true, // 问题描述长度校验开关
+        problemDescMinLength: '1', // 问题描述最小长度
+        problemDescMaxLength: '200', // 问题描述最大长度
+        problemDescRules: [{ required: true, message: '问题描述不能为空', trigger: 'change' }], // 问题描述校验规则
+        problemExtSwitch: true, // 扩展字段开关配置
+        problemAddExtLabel: '添加商品', // 扩展字段标题1，如：添加商品
+        problemDelExtLabel: '删除商品', // 扩展字段标题2，如：删除商品
+        problemExtLabel: '商品', // 商品
+        problemExtLengthSwitch: true, // 扩展字段长度校验开关
+        problemExtMinLength: '1', // 扩展字段最小长度
+        problemExtMaxLength: '200', // 扩展字段最大长度
+        problemExtRules: [{ required: false, message: '商品不能为空', trigger: 'change' }], // 扩展字段校验规则
+        problemExtColumnName: 'commodityName', // 扩展字段标识
+        replyTypeLabel: '回复方式', // 回复方式标题
+        replyTypeColumnName: 'replyType', // 回复方式字段标识
+        replyTypeRules: [{ required: true, message: '回复方式不能为空', trigger: 'change' }], // 回复方式校验规则
+        multiSelectCode: '1', // 多选的code
+        multiSelectLabel: '多选值', // 多选值标题
+        multiSelectColumnName: 'replyTypeItems', // 多选值字段标识
+        multiSelectLengthSwitch: true, // 多选值长度校验开关
+        multiSelectMinLength: '2', // 多选值最小长度
+        multiSelectMaxLength: '4', // 多选值最大长度
+        multiSelectRules: [{ required: true, message: '多选值不能为空', trigger: ['blur', 'change'] }], // 回复方式校验规则
+        singleSelectLabel: '单选值', // 单选值标题
+        singleSelectColumnName: 'replyTypeItems', // 单选值字段标识
+        singleSelectLengthSwitch: true, // 单选值长度校验开关
+        singleSelectMinLength: '2', // 单选值最小长度
+        singleSelectMaxLength: '4', // 单选值最大长度
+        singleSelectRules: [{ required: true, message: '单选值不能为空', trigger: ['blur', 'change'] }], // 回复方式校验规则
+        singleSelectCode: '2', // 单选的code
+
+        multiSelect: { // 多选
+          isIconShow: true, // 表格内容是否使用icon展示
+          iconShowValue: '1' // 值为iconShowValue时展示icon
+        },
+        singleSelect: { // 单选
+          isIconShow: false,
+          iconShowValue: ''
+        },
+        // 详情页表格字段配置
+        problemTableName: 'questionReplys', // 表格：问题列表字段名
+        problemDataName: 'dataList', // 表格：数据字段名
+        problemColumnName: 'columnList', // 表格：列名字段名
+        // 回复字段配置
+        problemReplyOption: 'optionList', // 回复值选项值
+        problemReplyValue: 'replyDesc' // 回复值
+      },
+      model: {
+        questionList: [
+          { questionDesc: '问题描述1', replyType: '2', commodityName: '你好', replyTypeItems: ['单选1'] },
+          { questionDesc: '问题描述2', replyType: '1', commodityName: '', replyTypeItems: ['多选1', '多选2'] }
+        ],
+        questionReplys: [
+          {
+            replyType: '1',
+            replyTypeName: '多选',
+            commodityName: '动感地带5G通行证',
+            questionDesc: '关于多选的问题',
+            dataList: [
+              {
+                provinceName: '广东',
+                enum1: '1',
+                enum2: '0'
+              },
+              {
+                provinceName: '广西',
+                enum1: '1',
+                enum2: '0'
+              },
+              {
+                provinceName: '湖南',
+                enum1: '0',
+                enum2: '1'
+              }
+            ],
+            columnList: [
+              {
+                columnName: 'provinceName',
+                label: '省份'
+              },
+              {
+                columnName: 'enum1',
+                label: '枚举值1'
+              },
+              {
+                columnName: 'enum2',
+                label: '枚举值2'
+              }
+            ],
+            optionList: [
+              {
+                code: '1',
+                name: '多选1'
+              },
+              {
+                code: '2',
+                name: '多选2'
+              },
+              {
+                code: '3',
+                name: '多选3'
+              }
+            ],
+            replyDesc: ['1', '2']
+          },
+          {
+            replyType: '2',
+            replyTypeName: '单选',
+            commodityName: '',
+            questionDesc: '关于单选的问题',
+            dataList: [
+              {
+                provinceName: '广东，天津',
+                singleValue: '单选值1'
+              },
+              {
+                provinceName: '北京',
+                singleValue: '单选值2'
+              },
+              {
+                provinceName: '上海',
+                singleValue: '单选值3'
+              }
+            ],
+            columnList: [
+              {
+                columnName: 'provinceName',
+                label: '省份'
+              },
+              {
+                columnName: 'singleValue',
+                label: '单选值'
+              }
+            ],
+            optionList: [
+              {
+                code: '1',
+                name: '单选1'
+              },
+              {
+                code: '2',
+                name: '单选2'
+              },
+              {
+                code: '3',
+                name: '单选3'
+              }
+            ],
+            replyDesc: '1'
+          },
+          {
+            replyType: '3', // 布尔值
+            replyTypeName: '布尔值',
+            commodityName: '',
+            questionDesc: '关于布尔值的问题',
+            dataList: [
+              {
+                provinceName: '广东，天津',
+                booleanValue: '是'
+              },
+              {
+                provinceName: '北京',
+                booleanValue: '否'
+              }
+            ],
+            columnList: [
+              {
+                columnName: 'provinceName',
+                label: '省份'
+              },
+              {
+                columnName: 'booleanValue',
+                label: '布尔值(是/否)'
+              }
+            ],
+            optionList: [
+              {
+                code: '1',
+                name: '是'
+              },
+              {
+                code: '2',
+                name: '否'
+              }
+            ],
+            replyDesc: '1'
+          },
+          {
+            replyType: '4', // 开放式
+            replyTypeName: '开放式',
+            commodityName: '',
+            questionDesc: '关于开放式的问题',
+            dataList: [
+              {
+                provinceName: '广东',
+                openValue: '回复内容-广东'
+              },
+              {
+                provinceName: '北京',
+                openValue: '回复内容-北京'
+              }
+            ],
+            columnList: [
+              {
+                columnName: 'provinceName',
+                label: '省份'
+              },
+              {
+                columnName: 'openValue',
+                label: '回复内容'
+              }
+            ],
+            replyDesc: '回复开放式问题'
+          }
+        ]
+      }
+    }
+  },
+  methods: {}
+}
+</script>

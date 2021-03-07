@@ -1,0 +1,8 @@
+import aspButtonList from './src/main'
+
+/* istanbul ignore next */
+aspButtonList.install = function (Vue) {
+  Vue.component(aspButtonList.name, aspButtonList)
+}
+
+export default aspButtonList

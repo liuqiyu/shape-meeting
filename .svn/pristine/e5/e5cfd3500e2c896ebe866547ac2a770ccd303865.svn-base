@@ -1,0 +1,8 @@
+import aspMain from './src/main.js'
+
+/* istanbul ignore next */
+aspMain.install = function (Vue) {
+  Vue.component(aspMain.name, aspMain)
+}
+
+export default aspMain

@@ -1,0 +1,8 @@
+import aspCollapseItem from './src/collapse-item.js'
+
+/* istanbul ignore next */
+aspCollapseItem.install = function (Vue) {
+  Vue.component(aspCollapseItem.name, aspCollapseItem)
+}
+
+export default aspCollapseItem

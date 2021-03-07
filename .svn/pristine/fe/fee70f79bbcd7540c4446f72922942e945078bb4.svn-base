@@ -1,0 +1,7 @@
+export default {
+  name: 'asp-button-group',
+  functional: true,
+  render (h, self) {
+    return h('el-button-group', self.data, self.children)
+  }
+}
