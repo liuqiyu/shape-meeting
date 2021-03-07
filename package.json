@@ -1,9 +1,9 @@
 {
-  "name": "asp-smart-ui",
-  "version": "1.0.15",
+  "name": "query-table-test",
+  "version": "1.0.3",
   "private": false,
   "description": "SmartUI, Vue 2.0 的桌面端组件库",
-  "main": "lib/asp-smart-ui.common.js",
+  "main": "lib/query-table.common.js",
   "keyword": "aspire shenzhen front team",
   "license": "MIT",
   "scripts": {
@@ -13,6 +13,7 @@
     "build:utils": "cross-env BABEL_ENV=utils babel src/utils --out-dir lib",
     "lint": "vue-cli-service lint",
     "eslint": "eslint src/components/**/*.vue src/components/**/*.js src/utils/**/*.js --quiet",
+    "build-table": "vue-cli-service build --target lib --name query-table --dest libsrc/components/index.js",
     "clean": "rimraf lib && rimraf src/**/lib",
     "chore": "webpack --config webpack.common.js",
     "conf": "webpack --config build/webpack.conf.js",
@@ -23,6 +24,7 @@
   "dependencies": {
     "core-js": "^3.6.4",
     "element-ui": "^2.13.2",
+    "query-table-test": "^1.0.3",
     "vue": "^2.6.11",
     "vue-router": "^3.1.6",
     "vuex": "^3.1.3"

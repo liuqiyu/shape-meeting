@@ -9,13 +9,13 @@
 </template>
 
 <script>
-import QueryTable from './components/query-table'
+// import QueryTable from './components/query-table'
 
 export default {
   name: 'app',
-  components: {
-    QueryTable
-  },
+  // components: {
+  //   QueryTable
+  // },
   data () {
     return {
       buttonList: [
